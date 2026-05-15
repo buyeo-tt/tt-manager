@@ -488,7 +488,7 @@ function PlayerManagerScreen({ setScreen, globalPlayers, setGlobalPlayers }) {
     try { await Share.share({ message: `[Player List]\n${exportText}` }); setIsExportModal(false); } catch (e) {}
   };
 
-  const handleImport = () => {
+const handleImport = () => {
     const rawLines = importText.split('\n').map(s => s.trim()).filter(s => s !== '' && !s.startsWith('[Player List]'));
     if (rawLines.length === 0) { Alert.alert(t('notice'), t('noPlayerImport')); return; }
     const uniqueMap = new Map();
@@ -503,13 +503,22 @@ function PlayerManagerScreen({ setScreen, globalPlayers, setGlobalPlayers }) {
     });
     if (addedCount === 0) { Alert.alert(t('notice'), t('alreadyRegistered')); return; }
     
-    // 🔧 수정: 웹 환경에서 Alert 사용시 취소버튼(style: 'cancel')이 명시되지 않으면 무시되는 버그 해결
-    Alert.alert(t('import'), t('importConfirm', { count: addedCount }), [
-      { text: t('cancel'), style: 'cancel' }, 
-      { text: t('apply'), onPress: () => {
-        saveToDB(Array.from(uniqueMap.values())); setImportText(''); setIsImportModal(false);
-      }}
-    ]);
+    // 🔧 완벽한 해결: 웹 환경(Web)에서는 React Native의 Alert 대신 브라우저 네이티브 window.confirm을 직접 호출하여 콜백 무시 버그를 원천 차단합니다.
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(`${t('import')}\n${t('importConfirm', { count: addedCount })}`);
+      if (confirmed) {
+        saveToDB(Array.from(uniqueMap.values()));
+        setImportText('');
+        setIsImportModal(false);
+      }
+    } else {
+      Alert.alert(t('import'), t('importConfirm', { count: addedCount }), [
+        { text: t('cancel'), style: 'cancel' }, 
+        { text: t('apply'), onPress: () => {
+          saveToDB(Array.from(uniqueMap.values())); setImportText(''); setIsImportModal(false);
+        }}
+      ]);
+    }
   };
 
   const renderPlayerItem = ({ item }) => (
