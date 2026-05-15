@@ -697,15 +697,23 @@ function TournamentScreen({ setScreen, globalPlayers }) {
     setSessions(updated); setActiveSessionId(newS.id); setIsAddSessionModal(false); setSessionNameInput('');
   };
 
+  // 🔧 수정: 웹 Alert 미지원 버그 해결 (TournamentScreen 삭제)
   const deleteActiveSession = () => {
     if (sessions.length <= 1) { Alert.alert(t('error'), '최소 1개의 그룹은 있어야 합니다.'); return; }
-    Alert.alert(t('delGroup'), `'${activeSession.name}'를 삭제하시겠습니까?`, [
-      { text: t('cancel'), style: 'cancel' },
-      { text: t('delete'), style: 'destructive', onPress: () => {
-          const updated = sessions.filter(s => s.id !== activeSessionId);
-          setSessions(updated); setActiveSessionId(updated[0].id);
-      }}
-    ]);
+    if (Platform.OS === 'web') {
+      if (window.confirm(`'${activeSession.name}'를 삭제하시겠습니까?`)) {
+        const updated = sessions.filter(s => s.id !== activeSessionId);
+        setSessions(updated); setActiveSessionId(updated[0].id);
+      }
+    } else {
+      Alert.alert(t('delGroup'), `'${activeSession.name}'를 삭제하시겠습니까?`, [
+        { text: t('cancel'), style: 'cancel' },
+        { text: t('delete'), style: 'destructive', onPress: () => {
+            const updated = sessions.filter(s => s.id !== activeSessionId);
+            setSessions(updated); setActiveSessionId(updated[0].id);
+        }}
+      ]);
+    }
   };
 
   const handleImportLeague = async () => {
@@ -902,22 +910,34 @@ function TournamentScreen({ setScreen, globalPlayers }) {
       setSelectedMatch(null); 
     };
 
+    // 🔧 수정: 웹 Alert 미지원 버그 해결 (승자 번복 경고)
     if (isDownstreamPlayed) {
-      Alert.alert(
-        "경고", 
-        "이미 상위 라운드가 진행 중입니다.\n승자를 번복하면 연관된 상위 라운드의 경기 결과가 모두 초기화됩니다.\n정말 번복하시겠습니까?", 
-        [{ text: "취소", style: "cancel" }, { text: "확인", style: 'destructive', onPress: applyWin }]
-      );
+      if (Platform.OS === 'web') {
+        if (window.confirm("경고\n이미 상위 라운드가 진행 중입니다.\n승자를 번복하면 연관된 상위 라운드의 경기 결과가 모두 초기화됩니다.\n정말 번복하시겠습니까?")) applyWin();
+      } else {
+        Alert.alert(
+          "경고", 
+          "이미 상위 라운드가 진행 중입니다.\n승자를 번복하면 연관된 상위 라운드의 경기 결과가 모두 초기화됩니다.\n정말 번복하시겠습니까?", 
+          [{ text: "취소", style: "cancel" }, { text: "확인", style: 'destructive', onPress: applyWin }]
+        );
+      }
     } else { applyWin(); }
   };
   
+  // 🔧 수정: 웹 Alert 미지원 버그 해결 (TournamentScreen 초기화)
   const resetTournament = () => {
-      Alert.alert(t('resetAlertTitle'), t('resetAlertDesc'), [
-        { text: t('cancel'), style: 'cancel' },
-        { text: t('reset'), onPress: () => {
-            updateActiveSession({ rounds: [], entryList: [], isActive: false });
-        }}
-      ])
+      if (Platform.OS === 'web') {
+        if (window.confirm(`${t('resetAlertTitle')}\n${t('resetAlertDesc')}`)) {
+          updateActiveSession({ rounds: [], entryList: [], isActive: false });
+        }
+      } else {
+        Alert.alert(t('resetAlertTitle'), t('resetAlertDesc'), [
+          { text: t('cancel'), style: 'cancel' },
+          { text: t('reset'), style: 'destructive', onPress: () => {
+              updateActiveSession({ rounds: [], entryList: [], isActive: false });
+          }}
+        ])
+      }
   }
 
   const captureAndSaveImage = async (targetRef, isLarge = false) => {
@@ -1239,25 +1259,22 @@ function TournamentScreen({ setScreen, globalPlayers }) {
 // ==========================================
 // 🏆 리그전 및 매치 카드
 // ==========================================
+// 🔧 수정: 타이머 지연 점수 덮어쓰기 방지를 위해 onBlur 방식으로 복원
 const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }) => {
   const { t } = useContext(TranslationContext);
   const [localS1, setLocalS1] = useState(matchInfo.s1);
   const [localS2, setLocalS2] = useState(matchInfo.s2);
-  const timerRef = useRef(null); 
   
   useEffect(() => { 
     setLocalS1(matchInfo.s1); setLocalS2(matchInfo.s2);
   }, [matchInfo.s1, matchInfo.s2]);
 
-  const handleTextChange = (v1, v2) => {
-    setLocalS1(v1); setLocalS2(v2);
-    if(timerRef.current) clearTimeout(timerRef.current);
-    
-    timerRef.current = setTimeout(() => {
-      let finalS1 = v1 === '' && v2 !== '' ? '0' : v1;
-      let finalS2 = v2 === '' && v1 !== '' ? '0' : v2;
+  const handleBlur = () => {
+    let finalS1 = localS1 === '' && localS2 !== '' ? '0' : localS1;
+    let finalS2 = localS2 === '' && localS1 !== '' ? '0' : localS2;
+    if (finalS1 !== matchInfo.s1 || finalS2 !== matchInfo.s2) {
       updateScore(matchInfo.id, finalS1, finalS2);
-    }, 300);
+    }
   };
   
   return (
@@ -1268,13 +1285,15 @@ const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }
         <TextInput 
           style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
           value={localS1} 
-          onChangeText={(v) => handleTextChange(v.replace(/[^0-9]/g, ''), localS2)}
+          onChangeText={(v) => setLocalS1(v.replace(/[^0-9]/g, ''))}
+          onBlur={handleBlur}
         />
         <Text> : </Text>
         <TextInput 
           style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
           value={localS2} 
-          onChangeText={(v) => handleTextChange(localS1, v.replace(/[^0-9]/g, ''))}
+          onChangeText={(v) => setLocalS2(v.replace(/[^0-9]/g, ''))}
+          onBlur={handleBlur}
         />
         <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p2, isColorMode)}]}>{matchInfo.p2}</Text>
       </View>
@@ -1394,16 +1413,25 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     setSessionNameInput('');
   };
 
+  // 🔧 수정: 웹 Alert 미지원 버그 해결 (LeagueScreen 삭제)
   const deleteActiveSession = () => {
     if (sessions.length <= 1) { Alert.alert(t('error'), '최소 1개의 조는 있어야 합니다.'); return; }
-    Alert.alert(t('delGroup'), `'${activeSession.name}'를 삭제하시겠습니까?`, [
-      { text: t('cancel'), style: 'cancel' },
-      { text: t('delete'), style: 'destructive', onPress: () => {
-          const updated = sessions.filter(s => s.id !== activeSessionId);
-          setSessions(updated);
-          setActiveSessionId(updated[0].id);
-      }}
-    ]);
+    if (Platform.OS === 'web') {
+      if (window.confirm(`'${activeSession.name}'를 삭제하시겠습니까?`)) {
+        const updated = sessions.filter(s => s.id !== activeSessionId);
+        setSessions(updated);
+        setActiveSessionId(updated[0].id);
+      }
+    } else {
+      Alert.alert(t('delGroup'), `'${activeSession.name}'를 삭제하시겠습니까?`, [
+        { text: t('cancel'), style: 'cancel' },
+        { text: t('delete'), style: 'destructive', onPress: () => {
+            const updated = sessions.filter(s => s.id !== activeSessionId);
+            setSessions(updated);
+            setActiveSessionId(updated[0].id);
+        }}
+      ]);
+    }
   };
 
   const createMatches = async () => { 
@@ -1438,20 +1466,37 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     setIsMatchActive(true); 
   };
 
+  // 🔧 수정: 웹 Alert 미지원 버그 해결 (LeagueScreen 대진표 생성 덮어쓰기)
   const generateSchedule = () => {
     if (leaguePlayers.length < 3) { Alert.alert(t('notice'), t('minPlayersReq')); return; }
     if (leaguePlayers.length > 20) { Alert.alert(t('error'), t('leagueMaxError')); return; }
     if (matches.length > 0 && matches.some(m => m.completed)) {
-      Alert.alert(t('matchWarningTitle'), t('matchWarningDesc'), [{ text: t('cancel'), style: 'cancel' }, { text: t('apply'), style:'destructive', onPress: () => createMatches() }]); 
+      if (Platform.OS === 'web') {
+        if (window.confirm(`${t('matchWarningTitle')}\n${t('matchWarningDesc')}`)) createMatches();
+      } else {
+        Alert.alert(t('matchWarningTitle'), t('matchWarningDesc'), [
+          { text: t('cancel'), style: 'cancel' }, 
+          { text: t('apply'), style:'destructive', onPress: () => createMatches() }
+        ]); 
+      }
       return;
     }
     createMatches();
   };
 
+  // 🔧 수정: 웹 Alert 미지원 버그 해결 (LeagueScreen 대진표 초기화)
   const resetMatches = () => {
-    Alert.alert(t('resetAlertTitle'), t('resetAlertDesc'), [{ text: t('cancel'), style: "cancel" }, { text: t('apply'), style: 'destructive', onPress: () => { 
+    if (Platform.OS === 'web') {
+      if (window.confirm(`${t('resetAlertTitle')}\n${t('resetAlertDesc')}`)) {
         setSessions(prev => prev.map(s => s.id === activeSessionId ? { ...s, matches: [], tieBreakers: {} } : s));
-    }}]);
+      }
+    } else {
+      Alert.alert(t('resetAlertTitle'), t('resetAlertDesc'), [
+        { text: t('cancel'), style: "cancel" }, 
+        { text: t('apply'), style: 'destructive', onPress: () => { 
+          setSessions(prev => prev.map(s => s.id === activeSessionId ? { ...s, matches: [], tieBreakers: {} } : s));
+      }}]);
+    }
   };
 
   const matchMap = useMemo(() => { const map = {}; matches.forEach(m => { map[getMatchKey(m.p1, m.p2)] = m; }); return map; }, [matches]);
