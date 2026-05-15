@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "tt-manager",
+    "slug": "tt-manager",
+    "version": "1.0.0",
+    "platforms": ["ios", "android", "web"],
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
