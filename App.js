@@ -969,6 +969,37 @@ function TournamentScreen({ setScreen, globalPlayers }) {
     else { Alert.alert("알림", "PC 환경에서만 인쇄 기능이 지원됩니다."); }
   };
 
+  // 4강 이상 결과 공유 로직 추가
+  const shareResults = async () => {
+    const rounds = activeSession.rounds;
+    if (!rounds || rounds.length === 0) return;
+    const finalRound = rounds[rounds.length - 1];
+    const semiRound = rounds.length > 1 ? rounds[rounds.length - 2] : null;
+    
+    if (!finalRound[0] || !finalRound[0].winner) { Alert.alert(t('notice'), t('notFinished')); return; }
+    
+    const winner = finalRound[0].winner;
+    const runnerUp = finalRound[0].p1 === winner ? finalRound[0].p2 : finalRound[0].p1;
+    let thirdPlaces = [];
+    if (semiRound) { 
+      semiRound.forEach(m => { 
+        if (m && m.winner) { 
+          const loser = m.p1 === m.winner ? m.p2 : m.p1; 
+          if (loser && loser !== 'WAITING' && loser !== 'BYE') thirdPlaces.push(loser); 
+        } 
+      }); 
+    }
+    
+    const msg = t('tourneyResultText', { groupName: activeSession.name, winner, runnerUp, thirds: thirdPlaces.join(', ') || t('none') });
+    
+    if (Platform.OS === 'web' && !navigator.share) {
+      navigator.clipboard.writeText(msg);
+      Alert.alert("알림", "결과가 클립보드에 복사되었습니다. (Ctrl+V로 붙여넣으세요)");
+    } else {
+      try { await Share.share({ message: msg }); } catch (e) {}
+    }
+  };
+
   if (activeSession?.isActive && activeSession.rounds && activeSession.rounds.length > 0) {
     const rounds = activeSession.rounds;
 
@@ -1012,13 +1043,21 @@ function TournamentScreen({ setScreen, globalPlayers }) {
           </ScrollView>
         </ScrollView>
         
-        <View style={styles.actionRow}>
-          <TouchableOpacity style={[styles.actionBtnShare, { backgroundColor: '#5F6368' }]} onPress={handlePrint}>
-            <Text style={styles.actionBtnText}>🖨️ 결과 인쇄하기</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtnImage} onPress={() => setIsTourneySaveModal(true)}>
-            <Text style={styles.actionBtnText}>📸 결과 이미지로 저장</Text>
-          </TouchableOpacity>
+        {/* 하단 공유, 이미지저장, 인쇄 레이아웃 수정 */}
+        <View style={[styles.actionRow, { alignItems: 'stretch' }]}>
+          <View style={{ flex: 1, paddingRight: 5 }}>
+            <TouchableOpacity style={[styles.actionBtnShare, { height: '100%', justifyContent: 'center' }]} onPress={shareResults}>
+              <Text style={styles.actionBtnText}>📢 결과 공유</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 1, paddingLeft: 5 }}>
+            <TouchableOpacity style={[styles.actionBtnImage, { marginBottom: 10 }]} onPress={() => setIsTourneySaveModal(true)}>
+              <Text style={styles.actionBtnText}>📸 결과 이미지로 저장</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.actionBtnShare, { backgroundColor: '#5F6368', marginRight: 0 }]} onPress={handlePrint}>
+              <Text style={styles.actionBtnText}>🖨️ 결과 인쇄하기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <Modal visible={isTourneySaveModal} transparent animationType="fade">
@@ -1259,7 +1298,7 @@ function TournamentScreen({ setScreen, globalPlayers }) {
 // ==========================================
 // 🏆 리그전 및 매치 카드
 // ==========================================
-// 🔧 수정: 타이머 지연 점수 덮어쓰기 방지를 위해 onBlur 방식으로 복원
+// 🔧 수정: 참조 코드 반영 (점수 입력 시 자동 0 채움 방지 및 블러 시 0 처리)
 const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }) => {
   const { t } = useContext(TranslationContext);
   const [localS1, setLocalS1] = useState(matchInfo.s1);
@@ -1269,12 +1308,15 @@ const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }
     setLocalS1(matchInfo.s1); setLocalS2(matchInfo.s2);
   }, [matchInfo.s1, matchInfo.s2]);
 
-  const handleBlur = () => {
-    let finalS1 = localS1 === '' && localS2 !== '' ? '0' : localS1;
-    let finalS2 = localS2 === '' && localS1 !== '' ? '0' : localS2;
-    if (finalS1 !== matchInfo.s1 || finalS2 !== matchInfo.s2) {
-      updateScore(matchInfo.id, finalS1, finalS2);
-    }
+  const handleBlur1 = () => {
+    let val1 = localS1, val2 = localS2;
+    if (val1 === '' && val2 !== '') { val1 = '0'; setLocalS1('0'); }
+    updateScore(matchInfo.id, val1, val2);
+  };
+  const handleBlur2 = () => {
+    let val1 = localS1, val2 = localS2;
+    if (val2 === '' && val1 !== '') { val2 = '0'; setLocalS2('0'); }
+    updateScore(matchInfo.id, val1, val2);
   };
   
   return (
@@ -1285,15 +1327,15 @@ const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }
         <TextInput 
           style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
           value={localS1} 
-          onChangeText={(v) => setLocalS1(v.replace(/[^0-9]/g, ''))}
-          onBlur={handleBlur}
+          onChangeText={(v) => { setLocalS1(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, v.replace(/[^0-9]/g, ''), localS2); }} 
+          onBlur={handleBlur1} 
         />
         <Text> : </Text>
         <TextInput 
           style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
           value={localS2} 
-          onChangeText={(v) => setLocalS2(v.replace(/[^0-9]/g, ''))}
-          onBlur={handleBlur}
+          onChangeText={(v) => { setLocalS2(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, localS1, v.replace(/[^0-9]/g, '')); }} 
+          onBlur={handleBlur2} 
         />
         <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p2, isColorMode)}]}>{matchInfo.p2}</Text>
       </View>
@@ -1413,7 +1455,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     setSessionNameInput('');
   };
 
-  // 🔧 수정: 웹 Alert 미지원 버그 해결 (LeagueScreen 삭제)
   const deleteActiveSession = () => {
     if (sessions.length <= 1) { Alert.alert(t('error'), '최소 1개의 조는 있어야 합니다.'); return; }
     if (Platform.OS === 'web') {
@@ -1466,7 +1507,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     setIsMatchActive(true); 
   };
 
-  // 🔧 수정: 웹 Alert 미지원 버그 해결 (LeagueScreen 대진표 생성 덮어쓰기)
   const generateSchedule = () => {
     if (leaguePlayers.length < 3) { Alert.alert(t('notice'), t('minPlayersReq')); return; }
     if (leaguePlayers.length > 20) { Alert.alert(t('error'), t('leagueMaxError')); return; }
@@ -1484,17 +1524,17 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     createMatches();
   };
 
-  // 🔧 수정: 웹 Alert 미지원 버그 해결 (LeagueScreen 대진표 초기화)
+  // 🔧 수정: 대진표 초기화 시 참가 확정 명단(players: [])도 같이 초기화하도록 반영
   const resetMatches = () => {
     if (Platform.OS === 'web') {
       if (window.confirm(`${t('resetAlertTitle')}\n${t('resetAlertDesc')}`)) {
-        setSessions(prev => prev.map(s => s.id === activeSessionId ? { ...s, matches: [], tieBreakers: {} } : s));
+        setSessions(prev => prev.map(s => s.id === activeSessionId ? { ...s, players: [], matches: [], tieBreakers: {} } : s));
       }
     } else {
       Alert.alert(t('resetAlertTitle'), t('resetAlertDesc'), [
         { text: t('cancel'), style: "cancel" }, 
         { text: t('apply'), style: 'destructive', onPress: () => { 
-          setSessions(prev => prev.map(s => s.id === activeSessionId ? { ...s, matches: [], tieBreakers: {} } : s));
+          setSessions(prev => prev.map(s => s.id === activeSessionId ? { ...s, players: [], matches: [], tieBreakers: {} } : s));
       }}]);
     }
   };
@@ -1726,13 +1766,19 @@ function LeagueScreen({ setScreen, globalPlayers }) {
              {displayedMatches.map(m => ( <LeagueMatchCard key={m.id} matchInfo={m} idx={m.orgIdx} updateScore={updateScore} isColorMode={isColorMode} /> ))}
           </View>
           
-          <View style={{marginTop: 20}}>
-            <View style={styles.leagueActionRow}>
-              <TouchableOpacity style={[styles.actionBtnShare, { backgroundColor: '#5F6368' }]} onPress={handlePrint}>
-                <Text style={styles.actionBtnText}>🖨️ 결과 인쇄하기</Text>
+          {/* 하단 디자인 배치 업데이트 */}
+          <View style={{marginTop: 20, paddingHorizontal: 15, marginBottom: 15, flexDirection: 'row', alignItems: 'stretch'}}>
+            <View style={{ flex: 1, paddingRight: 5 }}>
+              <TouchableOpacity style={[styles.actionBtnShare, { height: '100%', justifyContent: 'center' }]} onPress={shareStandings}>
+                <Text style={styles.actionBtnText}>📢 결과 공유</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionBtnImage} onPress={() => setIsLeagueSaveModal(true)}>
+            </View>
+            <View style={{ flex: 1, paddingLeft: 5 }}>
+              <TouchableOpacity style={[styles.actionBtnImage, { marginBottom: 10 }]} onPress={() => setIsLeagueSaveModal(true)}>
                 <Text style={styles.actionBtnText}>📸 결과 이미지로 저장</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.actionBtnShare, { backgroundColor: '#5F6368', marginRight: 0 }]} onPress={handlePrint}>
+                <Text style={styles.actionBtnText}>🖨️ 결과 인쇄하기</Text>
               </TouchableOpacity>
             </View>
           </View>
