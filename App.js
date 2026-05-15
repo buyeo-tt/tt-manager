@@ -1043,21 +1043,17 @@ function TournamentScreen({ setScreen, globalPlayers }) {
           </ScrollView>
         </ScrollView>
         
-        {/* 하단 공유, 이미지저장, 인쇄 레이아웃 수정 */}
-        <View style={[styles.actionRow, { alignItems: 'stretch' }]}>
-          <View style={{ flex: 1, paddingRight: 5 }}>
-            <TouchableOpacity style={[styles.actionBtnShare, { height: '100%', justifyContent: 'center' }]} onPress={shareResults}>
-              <Text style={styles.actionBtnText}>📢 결과 공유</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, paddingLeft: 5 }}>
-            <TouchableOpacity style={[styles.actionBtnImage, { marginBottom: 10 }]} onPress={() => setIsTourneySaveModal(true)}>
-              <Text style={styles.actionBtnText}>📸 결과 이미지로 저장</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionBtnShare, { backgroundColor: '#5F6368', marginRight: 0 }]} onPress={handlePrint}>
-              <Text style={styles.actionBtnText}>🖨️ 결과 인쇄하기</Text>
-            </TouchableOpacity>
-          </View>
+        {/* 하단 공유, 이미지저장, 인쇄 레이아웃 수정 (1:1:1 비율 일렬 배치) */}
+        <View style={{flexDirection: 'row', padding: 15, paddingBottom: Platform.OS === 'android' ? 60 : 45, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#eee'}}>
+          <TouchableOpacity style={[styles.actionBtn3, { backgroundColor: '#FBBC04' }]} onPress={shareResults}>
+            <Text style={styles.actionBtn3Text}>📤 결과 공유</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.actionBtn3, { backgroundColor: '#34A853', marginLeft: 8, marginRight: 8 }]} onPress={() => setIsTourneySaveModal(true)}>
+            <Text style={styles.actionBtn3Text}>⬇️ 이미지 저장</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.actionBtn3, { backgroundColor: '#5F6368' }]} onPress={handlePrint}>
+            <Text style={styles.actionBtn3Text}>🖨️ 결과 인쇄</Text>
+          </TouchableOpacity>
         </View>
 
         <Modal visible={isTourneySaveModal} transparent animationType="fade">
@@ -1766,21 +1762,17 @@ function LeagueScreen({ setScreen, globalPlayers }) {
              {displayedMatches.map(m => ( <LeagueMatchCard key={m.id} matchInfo={m} idx={m.orgIdx} updateScore={updateScore} isColorMode={isColorMode} /> ))}
           </View>
           
-          {/* 하단 디자인 배치 업데이트 */}
-          <View style={{marginTop: 20, paddingHorizontal: 15, marginBottom: 15, flexDirection: 'row', alignItems: 'stretch'}}>
-            <View style={{ flex: 1, paddingRight: 5 }}>
-              <TouchableOpacity style={[styles.actionBtnShare, { height: '100%', justifyContent: 'center' }]} onPress={shareStandings}>
-                <Text style={styles.actionBtnText}>📢 결과 공유</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1, paddingLeft: 5 }}>
-              <TouchableOpacity style={[styles.actionBtnImage, { marginBottom: 10 }]} onPress={() => setIsLeagueSaveModal(true)}>
-                <Text style={styles.actionBtnText}>📸 결과 이미지로 저장</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionBtnShare, { backgroundColor: '#5F6368', marginRight: 0 }]} onPress={handlePrint}>
-                <Text style={styles.actionBtnText}>🖨️ 결과 인쇄하기</Text>
-              </TouchableOpacity>
-            </View>
+          {/* 하단 디자인 배치 업데이트 (1:1:1 비율 일렬 배치) */}
+          <View style={{flexDirection: 'row', paddingHorizontal: 15, marginTop: 20, marginBottom: 15}}>
+            <TouchableOpacity style={[styles.actionBtn3, { backgroundColor: '#FBBC04' }]} onPress={shareStandings}>
+              <Text style={styles.actionBtn3Text}>📤 결과 공유</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.actionBtn3, { backgroundColor: '#34A853', marginLeft: 8, marginRight: 8 }]} onPress={() => setIsLeagueSaveModal(true)}>
+              <Text style={styles.actionBtn3Text}>⬇️ 이미지 저장</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.actionBtn3, { backgroundColor: '#5F6368' }]} onPress={handlePrint}>
+              <Text style={styles.actionBtn3Text}>🖨️ 결과 인쇄</Text>
+            </TouchableOpacity>
           </View>
           
           <View style={{ height: 400 }} />
@@ -2055,7 +2047,7 @@ function LeagueScreen({ setScreen, globalPlayers }) {
   );
 }
 
-// 스타일 시트 - 원본 유지
+// 스타일 시트 - 원본 유지 (신규 하단 버튼용 스타일 2개 추가)
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#fcfcfc' },
   container: { flex: 1 },
@@ -2169,5 +2161,9 @@ const styles = StyleSheet.create({
   groupActionBtnWrap: { flexDirection: 'row' },
   groupLoadBtn: { backgroundColor: '#34A853', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 5, marginRight: 5 },
   groupDelBtn: { backgroundColor: '#EA4335', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 5 },
-  groupActionText: { color: '#fff', fontSize: 11, fontWeight: 'bold' }
+  groupActionText: { color: '#fff', fontSize: 11, fontWeight: 'bold' },
+  
+  // 🔥 [추가] 일렬 3버튼용 스타일
+  actionBtn3: { flex: 1, paddingVertical: 14, borderRadius: 10, alignItems: 'center', justifyContent: 'center', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 1.5 },
+  actionBtn3Text: { color: '#fff', fontWeight: 'bold', fontSize: 13 },
 });
