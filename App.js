@@ -52,7 +52,6 @@ const getColorForPlayer = (name, isColorMode) => {
   return colors[hash % colors.length];
 }
 
-// 🔧 수정: 동률 처리용 manualTieBreakers 파라미터 및 internalRank 할당 로직 추가
 function calculateStandingsData(players, matches, rankingSystem, matchMap, manualTieBreakers = {}) {
   let stats = players.reduce((acc, name) => { acc[name] = { name, win: 0, lose: 0, scoreSum: 0 }; return acc; }, {});
   matches.forEach(m => {
@@ -84,9 +83,8 @@ function calculateStandingsData(players, matches, rankingSystem, matchMap, manua
     }
   });
 
-  // 🔧 수정: 토너먼트 배정을 위한 '고유 내부 순위' 2차 정렬 로직 (사용자 커스텀 Tie-breaker 반영)
   const internalSorted = [...sortedStats].sort((a, b) => {
-    if (a.rank !== b.rank) return a.rank - b.rank; // 공식 순위가 다르면 그대로
+    if (a.rank !== b.rank) return a.rank - b.rank;
     const tbA = manualTieBreakers[a.name] || 999;
     const tbB = manualTieBreakers[b.name] || 999;
     if (tbA !== tbB) return tbA - tbB;
@@ -281,7 +279,6 @@ const translations = {
     manualS3B4Desc: "매치 카드를 터치해 '승자'를 고르면 해당 선수가 다음 라운드로 진출합니다. 잘못 선택했을 경우 언제든 다시 카드를 눌러 승자를 번복할 수 있습니다."
   },
   en: { 
-    // 영어 번역 생략 처리 방지 (원본 유지)
     appName: "TT Bracket Manager", playerDbBtn: "👥 Player DB", leagueBtn: "🔄 League (Groups)", tournamentBtn: "🏆 Tournament", manualBtn: "📖 App Manual", continueTournament: "Continue Tournament", playerManagerTitle: "Player DB", manualTitle: "User Manual", backToMain: "◀ Home", export: "Export", exportSelectTitle: "Select List to Export", exportAllPlayers: "All Players", addClubBtn: "+ Club", newClubTitle: "Add New Club", clubNamePlaceholder: "Club Name", all: "All", addingToClubHint: "📌 Adding to [{club}]", nameInputPlaceholder: "Name + Class", defaultClub: "Default Club", add: "Add", pasteListBtn: "📥 Paste Text", pasteListTitle: "Paste Player List", pastePlaceholder: "[Club A] John 6\nJane 5", cancel: "Cancel", import: "Import", notice: "Notice", error: "Error", warning: "Warning", matchWarningTitle: "Warning", matchWarningDesc: "There are ongoing matches. Creating new matches will delete existing results. Continue?", apply: "Confirm", enterName: "Enter a name.", alreadyRegistered: "Player already registered.", noPlayerExport: "No players to export.", noPlayerImport: "No valid names.", importConfirm: "Add {count} players?", back: "◀ Back", tournamentSetupTitle: "[{groupName}] Setup", basicInfo: "1. Basic Info", totalPlayers: "Total Players:", prelimGroups: "Guide Groups:", autoByeInfo: "💡 Round of {size}, {byes} Byes will be assigned", seedAssignment: "2. Seed Assignment", seedSlot: "Seed {num} Slot", groupRank: "Gr {group} - Rank {rank}", genBracketBtn: "Generate Bracket", minPlayersReq: "At least 2 players needed.", maxPlayersReq: "Max 256 players allowed.", leagueMaxError: "Max 20 players per group.", bye: "Bye", waiting: "Waiting", unselected: "Unselected", exit: "◀ Home",  bracketBoard: "[{groupName}] Board", refereeNotice: "📢 Referee: [{name}] is the referee.", tournamentBracket: "🏆 {groupName} (Round of {size})", finals: "Finals", roundOf: "Round of {size}", shareResults: "📢 Share Results", saveFullImage: "📸 Save Full Image", selectWinner: "Select Winner", wait: "Wait", notFinished: "Finals not determined.", none: "None", tourneyResultText: "🏆 [{groupName} Tournament Results] 🏆\n\n🥇 1st: {winner}\n🥈 2nd: {runnerUp}\n🥉 3rd: {thirds}", needPermission: "Permission Required", permissionDesc: "Photo library access is needed.", saveSuccess: "Saved", saveImageSuccess: "Saved to gallery! 📸", saveFailed: "Failed to save.", prelimSetup: "Prelims Setup", loadFromDb: "1. Load from DB", swipeInstruction: "Swipe horizontally and tap to add.", noAvailablePlayers: "No available players.", confirmedPlayers: "2. [{groupName}] Confirmed ({count})", tapToRemove: "Tap to remove.", noSelectedPlayers: "No selected players.", genMatchesBtn: "Generate Matches", enterBoardBtn: "▶ Enter {groupName} Board", resetBoardBtn: "Reset Bracket", createMatchesBtn: "Create New", backToSetup: "◀ Setup", prelimBoard: "[{groupName}] Match Board", leagueBoardTitle: "🏆 {groupName} Match Board", player: "Player", detailedStandings: "📊 Standings", rank: "Rank", name: "Name", winLoss: "W/L", totalPoints: "Pts", winLossFormat: "{win}W {lose}L", scoreBoard: "📅 Score Board", matchNumber: "Match {num} (Ref:{ref})", share: "Share", saveImage: "Save Image", saveProgress: "Save Progress", saveProgressMsg: "Match progress has been saved.", reset: "Reset", leagueResultText: "[{groupName} Standings]\n\n{text}", leagueRankLine: "{rank}: {name} ({win}W {lose}L, Pts: {pts})", resetAlertTitle: "Reset", resetAlertDesc: "Clear all match results?", langSwitch: "한국어", rankingMethodTitle: "Ranking System", rankPoints: "Points", rankWins: "Win/Loss", selectSaveOption: "Select Save Option", saveGrid: "📊 Save Grid", saveStandings: "🏆 Save Standings", saveScoreBoard: "📅 Save Score Board", savePrintableScorecards: "🖨️ Save All Match Scorecards", clubCreateHint: "Club created.", matchOrder: "Match Order", sortDefault: "Default", sortName: "Name", sortClass: "Class", colorMode: "🎨 Color", addGroup: "+ Add Group", delGroup: "Delete Group", groupNameInputTitle: "Group Name", groupNamePlaceholder: "e.g. Group A", summaryTitle: "📊 All Groups Summary", summaryBtn: "📊 Summary", noDataGroup: "No match data.", savedGroupsInfo: "💾 Saved Templates", saveCurrentList: "+ Save Current Template", noSavedGroups: "No templates saved.", template: "Template {index}", delete: "Del", load: "Load", saveListEmpty: "No players to save.", saveListMax: "Max 10 templates allowed.", saveListSuccess: "Template saved.", loadGroupSuccess: "Template loaded to current group.", goToActiveGame: "▶ Active Game", importLeague: "🔄 Import League", manualSelect: "✍️ Manual Select", rankRange: "Rank Range:", toRank: "", importBtn: "Import Players", importSuccess: "Imported {count} players from League.", noImportData: "No players matched the criteria.", importedCount: "📌 Imported from League: {count} players", integrated: "Integrated", upperBracket: "Upper", lowerBracket: "Lower", matchScorecardTitle: "{groupName} - Match Scorecard", matchRefAndTable: "Ref: {ref} / Table: ________", finalScore: "Final Score", finalWinner: "Final Winner: _________________", gameNum: "Game {num}",
     manualSec1Title: "👥 Player Database", manualS1B1Title: "Club & Sorting:", manualS1B1Desc: "Filter easily by club. Add class number for auto-sorting.", manualS1B4Title: "Bulk Add:", manualS1B4Desc: "Paste text lists to add multiple players.", manualSec2Title: "🔄 League (Groups)", manualS2B0Title: "Multi-Group Tabs:", manualS2B0Desc: "Manage multiple groups simultaneously via top tabs.", manualS2B1Title: "Ranking Logic:", manualS2B1Desc: "Choose Points or Wins priority. Auto calculates Head-to-Head.", manualS2B2Title: "Fair Ref & Rest:", manualS2B2Desc: "Maximizes rest time and distributes referee duties fairly. (Consecutive matches may occur depending on the player count).", manualS2B3Title: "Safe Image Export (Common):", manualS2B3Desc: "Tap the Save Image button at the bottom to open a pop-up modal. You can safely save brackets, standings, and scorecards to your gallery on both Android and iOS.", manualSec3Title: "🏆 Tournament", manualS3B1Title: "Auto BYEs & Snake Seed:", manualS3B1Desc: "Creates 8~256 bracket and separates strong players.", manualS3B2Title: "League Integration:", manualS3B2Desc: "Automatically import players based on their league rankings to easily create Upper/Lower brackets.", manualS3B3Title: "Scorecards & Bracket Export:", manualS3B3Desc: "Tap a match to export a 1:1 referee scorecard, or use the bottom button to save the entire bracket progress as an image.", manualS3B4Title: "Winner Selection System:", manualS3B4Desc: "Tap winner to advance. You can change the winner anytime by tapping the match card again."
   }
@@ -320,6 +317,19 @@ export default function App() {
   const [locale, setLocale] = useState('ko');
 
   useEffect(() => {
+    // 🔧 수정: 웹 브라우저에서 인쇄 시 뒷부분이 잘리는 문제 해결 (CSS 동적 주입)
+    if (Platform.OS === 'web') {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        @media print {
+          html, body, #root { height: auto !important; min-height: 100% !important; overflow: visible !important; }
+          div { overflow: visible !important; }
+          ::-webkit-scrollbar { display: none; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
     const initApp = async () => {
       try {
         const migrated = await AsyncStorage.getItem('__MIGRATED_V13__');
@@ -369,7 +379,6 @@ export default function App() {
   );
 }
 
-// ... [HomeScreen, ManualScreen, PlayerManagerScreen 코드는 원본과 동일하게 유지 - 생략 처리 없이 출력]
 function HomeScreen({ setScreen }) {
   const { t, toggleLocale } = useContext(TranslationContext);
   return (
@@ -493,9 +502,14 @@ function PlayerManagerScreen({ setScreen, globalPlayers, setGlobalPlayers }) {
        if (!uniqueMap.has(key)) { uniqueMap.set(key, { name: pName, club: pClub }); addedCount++; }
     });
     if (addedCount === 0) { Alert.alert(t('notice'), t('alreadyRegistered')); return; }
-    Alert.alert(t('import'), t('importConfirm', { count: addedCount }), [{ text: t('cancel') }, { text: t('apply'), onPress: () => {
+    
+    // 🔧 수정: 웹 환경에서 Alert 사용시 취소버튼(style: 'cancel')이 명시되지 않으면 무시되는 버그 해결
+    Alert.alert(t('import'), t('importConfirm', { count: addedCount }), [
+      { text: t('cancel'), style: 'cancel' }, 
+      { text: t('apply'), onPress: () => {
         saveToDB(Array.from(uniqueMap.values())); setImportText(''); setIsImportModal(false);
-    }}]);
+      }}
+    ]);
   };
 
   const renderPlayerItem = ({ item }) => (
@@ -699,14 +713,10 @@ function TournamentScreen({ setScreen, globalPlayers }) {
       leagueSessions.forEach(s => {
         const matchMap = {};
         s.matches.forEach(m => { matchMap[getMatchKey(m.p1, m.p2)] = m; });
-        // 🔧 수정: 연동 시에도 manualTieBreakers 값을 반영하여 internalRank 기준으로 가져옴
         const st = calculateStandingsData(s.players, s.matches, rankSys, matchMap, s.tieBreakers || {});
         st.forEach(p => {
-          // 토너먼트 진출 연동 시에는 표면적인 rank 대신 internalRank 기준으로 연동할 수도 있으나,
-          // 설정한 진출 순위 범위(min~max)는 공식 rank를 사용합니다.
           if (p.rank >= min && p.rank <= max) {
               extracted.push(p.name);
-              // 그러나 내부 정렬을 위해 internalRank를 그룹화 기준으로 삼습니다.
               if (!rankGroups[p.internalRank]) rankGroups[p.internalRank] = [];
               rankGroups[p.internalRank].push(p.name);
           }
@@ -822,7 +832,6 @@ function TournamentScreen({ setScreen, globalPlayers }) {
     const { rIdx, mIdx } = selectedMatch;
     const oldWinner = newRounds[rIdx][mIdx].winner;
 
-    // 🔧 수정: 하위 결과 몽땅 초기화 방어를 위한 다운스트림 검사 (엣지 케이스 처리)
     let isDownstreamPlayed = false;
     if (oldWinner && oldWinner !== name) {
         let tempR = rIdx + 1;
@@ -905,10 +914,10 @@ function TournamentScreen({ setScreen, globalPlayers }) {
   const captureAndSaveImage = async (targetRef, isLarge = false) => {
     try {
       if (!targetRef.current) return;
-      Keyboard.dismiss(); // 🔧 안전장치: 화면 캡처 전 강제 포커스 블러 방지
+      Keyboard.dismiss(); 
       const captureQuality = isLarge ? 0.4 : 0.8;
       const localUri = await captureRef(targetRef, { format: 'png', quality: captureQuality });
-  
+ 
       if (Platform.OS === 'web') {
         const link = document.createElement('a');
         link.href = localUri;
@@ -931,8 +940,6 @@ function TournamentScreen({ setScreen, globalPlayers }) {
     else { Alert.alert("알림", "PC 환경에서만 인쇄 기능이 지원됩니다."); }
   };
 
-  const shareResults = async () => { /* ... 원본과 동일 */ };
-
   if (activeSession?.isActive && activeSession.rounds && activeSession.rounds.length > 0) {
     const rounds = activeSession.rounds;
 
@@ -954,7 +961,6 @@ function TournamentScreen({ setScreen, globalPlayers }) {
           </ScrollView>
         </View>
 
-        {/* 🔧 성능 최적화: removeClippedSubviews를 통한 128강~256강의 프레임 드랍 최소화 */}
         <ScrollView horizontal={false} removeClippedSubviews={true} style={{ flex: 1, backgroundColor: '#fcfcfc' }}>
           <ScrollView horizontal={true} removeClippedSubviews={true} contentContainerStyle={{ padding: 20, paddingBottom: 400 }}>
             <View ref={captureViewRef} collapsable={false} style={styles.bracketBoard}>
@@ -986,7 +992,6 @@ function TournamentScreen({ setScreen, globalPlayers }) {
           </TouchableOpacity>
         </View>
 
-        {/* 🔧 캡처 이슈 안내 모달 텍스트 추가 */}
         <Modal visible={isTourneySaveModal} transparent animationType="fade">
           <View style={styles.modalBg}>
             <View style={styles.modalBox}>
@@ -1006,7 +1011,6 @@ function TournamentScreen({ setScreen, globalPlayers }) {
           </View>
         </Modal>
 
-        {/* 단일 경기 기록지 출력용 모달 */}
         <Modal visible={modalVisible} transparent animationType="fade">
           <View style={styles.modalBg}>
             <View style={styles.modalBox}>
@@ -1023,7 +1027,6 @@ function TournamentScreen({ setScreen, globalPlayers }) {
           </View>
         </Modal>
 
-        {/* 화면 밖 숨겨진 1:1 단일 매치 기록지 (출력용) - 원본과 동일하게 유지 */}
         <View style={{ position: 'absolute', top: -10000, left: 0, opacity: 0 }}>
           <View ref={singleScorecardRef} collapsable={false} style={{ width: 400, backgroundColor: '#fff', padding: 20 }}>
             {selectedMatch && (() => {
@@ -1073,7 +1076,6 @@ function TournamentScreen({ setScreen, globalPlayers }) {
     );
   }
 
-  // ... [Tournament Setup 부분은 원본 유지]
   return (
     <View style={styles.screenContainer}>
       <View style={styles.header}>
@@ -1232,13 +1234,12 @@ const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }
   const { t } = useContext(TranslationContext);
   const [localS1, setLocalS1] = useState(matchInfo.s1);
   const [localS2, setLocalS2] = useState(matchInfo.s2);
-  const timerRef = useRef(null); // 🔧 디바운싱 처리를 위한 Ref
+  const timerRef = useRef(null); 
   
   useEffect(() => { 
     setLocalS1(matchInfo.s1); setLocalS2(matchInfo.s2);
   }, [matchInfo.s1, matchInfo.s2]);
 
-  // 🔧 수정: onBlur 의존성을 없애고 300ms 딜레이를 주어 자동 저장되도록 변경
   const handleTextChange = (v1, v2) => {
     setLocalS1(v1); setLocalS2(v2);
     if(timerRef.current) clearTimeout(timerRef.current);
@@ -1289,7 +1290,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
   const [isSummaryModal, setIsSummaryModal] = useState(false);
   const [isLeagueSaveModal, setIsLeagueSaveModal] = useState(false);
 
-  // 🔧 수정: 동률 처리 수동 결정을 위한 상태 및 모달
   const [isTieBreakerModal, setIsTieBreakerModal] = useState(false);
 
   const [savedTemplates, setSavedTemplates] = useState([]);
@@ -1339,7 +1339,7 @@ function LeagueScreen({ setScreen, globalPlayers }) {
   const activeSession = sessions.find(s => s.id === activeSessionId) || sessions[0];
   const leaguePlayers = activeSession?.players || [];
   const matches = activeSession?.matches || [];
-  const tieBreakers = activeSession?.tieBreakers || {}; // 🔧 내부 우선순위 결정 상태
+  const tieBreakers = activeSession?.tieBreakers || {}; 
 
   const clubs = useMemo(() => {
     const set = new Set(globalPlayers.map(p => p.club || DEFAULT_CLUB_KEY));
@@ -1492,13 +1492,12 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     return [...matches].sort((a,b)=>a.orgIdx - b.orgIdx).map(m => `${playerIndexMap[m.p1]}-${playerIndexMap[m.p2]}`).join(', ');
   }, [matches, playerIndexMap]);
 
-  // 🌐 웹 호환 이미지 저장 함수 적용 (LeagueScreen)
   const captureAndSaveImage = async (targetRef) => {
     try {
       if (!targetRef.current) return;
-      Keyboard.dismiss(); // 🔧 안전장치
+      Keyboard.dismiss(); 
       const localUri = await captureRef(targetRef, { format: 'png', quality: 0.8 });
-  
+ 
       if (Platform.OS === 'web') {
         const link = document.createElement('a');
         link.href = localUri;
@@ -1629,7 +1628,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
               
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                 <Text style={styles.sectionTitle}>{t('detailedStandings')}</Text>
-                {/* 🔧 동률 발생 시 우선순위 결정 버튼 노출 */}
                 {hasTies && (
                   <TouchableOpacity style={styles.summaryBtn} onPress={() => setIsTieBreakerModal(true)}>
                     <Text style={styles.summaryBtnText}>🏆 동률 순위 결정</Text>
@@ -1688,7 +1686,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
           <View style={{ height: 400 }} />
         </ScrollView>
 
-        {/* 🔧 동률 처리 수동 결정 모달 */}
         <Modal visible={isTieBreakerModal} transparent animationType="slide">
           <View style={styles.modalBg}>
             <View style={[styles.modalBox, {height: '70%', padding: 25}]}>
@@ -1754,7 +1751,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
           </View>
         </Modal>
 
-        {/* 리그전 1:1 대진표 (출력용, 검정 글씨 적용) - 원본 동일 유지 */}
         <View style={{ position: 'absolute', top: -10000, left: 0, opacity: 0 }}>
           <View ref={printableScorecardsRef} collapsable={false} style={{ width: 800, backgroundColor: '#fff', padding: 20 }}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>{t('matchScorecardTitle', { groupName: activeSession?.name })}</Text>
@@ -1797,7 +1793,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     );
   }
 
-  // ... [리그전 Setup 부분은 원본과 동일하게 유지 - 생략 처리 없이 출력]
   return (
     <View style={styles.screenContainer}>
       <View style={styles.header}>
