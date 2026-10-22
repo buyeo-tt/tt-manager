@@ -326,48 +326,26 @@ export default function App() {
   useEffect(() => {
     // 🔧 수정: 웹 브라우저에서 인쇄 시 뒷부분이 잘리는 문제 해결 (CSS 동적 주입)
 if (Platform.OS === 'web') {
-  const style = document.createElement('style');
-
-  style.innerHTML = `
-    /* 웹 화면의 기본 레이아웃 및 스크롤 설정 */
-    html, body, #root {
-      width: 100%;
-      min-height: 100%;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      const style = document.createElement('style');
+      style.innerHTML = `
+        /* 앱 내부 스크롤 비활성화 & 브라우저 자체 세로 스크롤만 허용 */
+        html, body, #root { 
+          width: 100%; 
+          height: auto !important;     /* 화면 높이를 내용물 크기에 맞게 자동 확장 */
+          min-height: 100vh;
+          margin: 0; 
+          padding: 0; 
+          overflow-y: auto !important; /* 브라우저 세로 스크롤 작동 */
+          overflow-x: hidden;          /* 브라우저 가로 흔들림 방지 */
+        }
+        @media print {
+          html, body, #root { height: auto !important; min-height: 100% !important; overflow: visible !important; }
+          div { overflow: visible !important; }
+          ::-webkit-scrollbar { display: none; }
+        }
+      `;
+      document.head.appendChild(style);
     }
-
-    body {
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-
-    #root {
-      min-height: 100vh;
-    }
-
-    /* 인쇄 시에는 전체 콘텐츠가 표시되도록 설정 */
-    @media print {
-      html, body, #root {
-        width: auto !important;
-        height: auto !important;
-        min-height: 100% !important;
-        overflow: visible !important;
-      }
-
-      div {
-        overflow: visible !important;
-      }
-
-      ::-webkit-scrollbar {
-        display: none;
-      }
-    }
-  `;
-
-  document.head.appendChild(style);
-}
     const initApp = async () => {
       try {
         const migrated = await AsyncStorage.getItem('__MIGRATED_V13__');
@@ -2101,9 +2079,9 @@ function LeagueScreen({ setScreen, globalPlayers }) {
 
 // 스타일 시트 - 원본 유지 (신규 하단 버튼용 스타일 2개 추가)
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#fcfcfc' },
-  container: { flex: 1 },
-  screenContainer: { flex: 1, width: '100%', maxWidth: '100%', minWidth: 0 },
+  safeArea: { flexGrow: 1, backgroundColor: '#fcfcfc' },
+  container: { flexGrow: 1 },
+  screenContainer: { flexGrow: 1, width: '100%', maxWidth: '100%' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 15, borderBottomWidth: 1, borderColor: '#ddd', backgroundColor: '#fff' },
   backBtn: { fontSize: 14, color: '#1A73E8', fontWeight: 'bold' },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333' },
