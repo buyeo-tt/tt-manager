@@ -363,7 +363,12 @@ if (Platform.OS === 'web') {
       ::-webkit-scrollbar {
         display: none;
       }
-    }    const initApp = async () => {
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+    const initApp = async () => {
       try {
         const migrated = await AsyncStorage.getItem('__MIGRATED_V13__');
         if (!migrated) {
