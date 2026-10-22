@@ -328,6 +328,9 @@ export default function App() {
     if (Platform.OS === 'web') {
       const style = document.createElement('style');
       style.innerHTML = `
+        /* 👇 모바일 세로(아래쪽) 잘림 방지 코드 추가 */
+        html, body, #root { height: 100%; min-height: 100dvh; } 
+        
         @media print {
           html, body, #root { height: auto !important; min-height: 100% !important; overflow: visible !important; }
           div { overflow: visible !important; }
@@ -1687,7 +1690,7 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     return (
       <View style={styles.gridContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start' }}>
+          <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start', minWidth: 'max-content' }}>
             <Text style={[styles.captureTitle, { marginBottom: 20 }]}>{t('leagueBoardTitle', { groupName: activeSession?.name || '' })}</Text>
             <View>
               <View style={styles.row}>
@@ -1730,7 +1733,7 @@ function LeagueScreen({ setScreen, globalPlayers }) {
           <TouchableOpacity onPress={handleSaveProgress}><Text style={[styles.backBtn, {color: '#34A853'}]}>{t('saveProgress')}</Text></TouchableOpacity>
         </View>
 
-        <ScrollView contentContainerStyle={{paddingBottom: 200, flexGrow: 1}} keyboardShouldPersistTaps="handled">
+       <ScrollView style={{ flex: 1 }} contentContainerStyle={{paddingBottom: 200, flexGrow: 1}} keyboardShouldPersistTaps="handled">
           <View style={{ paddingTop: 20 }}>
             {renderGridBoard}
             <View ref={standingsCaptureRef} collapsable={false} style={[styles.rankSection, { backgroundColor: '#fcfcfc' }]}>
@@ -1929,7 +1932,7 @@ function LeagueScreen({ setScreen, globalPlayers }) {
         </ScrollView>
       </View>
 
-      <ScrollView contentContainerStyle={{paddingBottom: 50}} keyboardShouldPersistTaps="handled">
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{paddingBottom: 50}} keyboardShouldPersistTaps="handled">
         <View style={styles.leagueSection}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15}}>
             <Text style={[styles.sectionTitle, {marginBottom: 0}]}>📌 [{activeSession?.name}] 명단 설정</Text>
