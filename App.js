@@ -1716,10 +1716,6 @@ function LeagueScreen({ setScreen, globalPlayers }) {
   const renderGridBoard = useMemo(() => {
     const statsMap = {}; standings.forEach(s => { statsMap[s.name] = s; });
     return (
-      <View style={styles.gridContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start', minWidth: 'max-content' }}>
-
      <View style={styles.gridContainer}>
        <ScrollView horizontal style={{ width: '100%', flexGrow: 0, flexShrink: 1 }} contentContainerStyle={{ alignItems: 'flex-start' }} showsHorizontalScrollIndicator={true} nestedScrollEnabled={true}
   >
