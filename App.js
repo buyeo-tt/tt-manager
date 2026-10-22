@@ -328,17 +328,31 @@ export default function App() {
 if (Platform.OS === 'web') {
       const style = document.createElement('style');
       style.innerHTML = `
-        /* 앱 내부 터치/입력 정상화를 위해 브라우저 스크롤 원천 차단 */
-        html, body, #root { 
-          width: 100%; 
-          height: 100%; 
-          min-height: 100dvh; /* 모바일 아래쪽 잘림 완벽 방지 */
-          margin: 0; 
-          padding: 0; 
-          overflow: hidden !important; /* 브라우저 스크롤 끄기 (필수) */
+        /* 1. 모바일 앱 스크롤 먹통 및 화면 잘림 완벽 해결 */
+        html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden !important; 
+        }
+        #root {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden !important;
+        }
+        /* 2. PC 마우스 클릭(점수 입력칸) 안 되는 현상 강제 방지 */
+        input, textarea {
+          user-select: auto !important;
+          pointer-events: auto !important;
         }
         @media print {
-          html, body, #root { height: auto !important; min-height: 100% !important; overflow: visible !important; }
+          html, body, #root { position: static; height: auto !important; overflow: visible !important; display: block; }
           div { overflow: visible !important; }
           ::-webkit-scrollbar { display: none; }
         }
@@ -1118,7 +1132,7 @@ function TournamentScreen({ setScreen, globalPlayers }) {
           </View>
         </Modal>
 
-        <View style={{ position: 'absolute', top: -10000, left: 0, opacity: 0 }}>
+        <View pointerEvents="none" style={{ position: 'absolute', top: -10000, left: 0, opacity: 0 }}>
           <View ref={singleScorecardRef} collapsable={false} style={{ width: 400, backgroundColor: '#fff', padding: 20 }}>
             {selectedMatch && (() => {
               const rIdx = selectedMatch.rIdx;
@@ -1696,7 +1710,7 @@ return (
       <View style={styles.gridContainer}>
         {/* 👇 여기에 style={{ width: '100%' }} 를 추가하여 모바일 터치 영역을 확보합니다 */}
         <ScrollView horizontal style={{ width: '100%' }} showsHorizontalScrollIndicator={false}>
-          <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start', minWidth: 'max-content' }}>
+         <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start' }}>
             <Text style={[styles.captureTitle, { marginBottom: 20 }]}>{t('leagueBoardTitle', { groupName: activeSession?.name || '' })}</Text>
             <View>
               <View style={styles.row}>
@@ -1739,7 +1753,7 @@ return (
           <TouchableOpacity onPress={handleSaveProgress}><Text style={[styles.backBtn, {color: '#34A853'}]}>{t('saveProgress')}</Text></TouchableOpacity>
         </View>
 
-       <ScrollView style={{ flex: 1 }} contentContainerStyle={{paddingBottom: 200, flexGrow: 1}} keyboardShouldPersistTaps="handled">
+       <ScrollView style={{ flex: 1 }} contentContainerStyle={{paddingBottom: 200, flexGrow: 1}} keyboardShouldPersistTaps="always">
           <View style={{ paddingTop: 20 }}>
             {renderGridBoard}
             <View ref={standingsCaptureRef} collapsable={false} style={[styles.rankSection, { backgroundColor: '#fcfcfc' }]}>
@@ -1871,7 +1885,7 @@ return (
           </View>
         </Modal>
 
-        <View style={{ position: 'absolute', top: -10000, left: 0, opacity: 0 }}>
+        <View pointerEvents="none" style={{ position: 'absolute', top: -10000, left: 0, opacity: 0 }}>
           <View ref={printableScorecardsRef} collapsable={false} style={{ width: 800, backgroundColor: '#fff', padding: 20 }}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>{t('matchScorecardTitle', { groupName: activeSession?.name })}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
