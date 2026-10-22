@@ -325,12 +325,17 @@ export default function App() {
 
   useEffect(() => {
     // 🔧 수정: 웹 브라우저에서 인쇄 시 뒷부분이 잘리는 문제 해결 (CSS 동적 주입)
-    if (Platform.OS === 'web') {
+if (Platform.OS === 'web') {
       const style = document.createElement('style');
       style.innerHTML = `
-        /* 👇 모바일 세로(아래쪽) 잘림 방지 코드 추가 */
-        html, body, #root { height: 100%; min-height: 100dvh; } 
-        
+        /* 모바일 세로/가로 잘림 완벽 방지 */
+        html, body, #root { 
+          width: 100%; 
+          height: 100%; 
+          margin: 0; 
+          padding: 0; 
+          overflow: hidden !important; /* 브라우저 자체 스크롤 막고 앱 내부 스크롤만 허용 */
+        }
         @media print {
           html, body, #root { height: auto !important; min-height: 100% !important; overflow: visible !important; }
           div { overflow: visible !important; }
@@ -2073,7 +2078,7 @@ function LeagueScreen({ setScreen, globalPlayers }) {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#fcfcfc' },
   container: { flex: 1 },
-  screenContainer: { flex: 1 },
+  screenContainer: { flex: 1, width: '100%', maxWidth: '100%', overflow: 'hidden' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 15, borderBottomWidth: 1, borderColor: '#ddd', backgroundColor: '#fff' },
   backBtn: { fontSize: 14, color: '#1A73E8', fontWeight: 'bold' },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333' },
@@ -2132,7 +2137,7 @@ const styles = StyleSheet.create({
   connectorLine: { height: 2, width: 35, backgroundColor: '#ccc', position: 'absolute', right: -35 },
   leagueSection: { padding: 15, backgroundColor: '#fff', borderBottomWidth: 1, borderColor: '#eee' },
   captureTitle: { fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginBottom: 20, color: '#333' },
-  gridContainer: { paddingHorizontal: 15 }, 
+  gridContainer: { paddingHorizontal: 15, width: '100%' }, 
   row: { flexDirection: 'row' },
   cell: { width: 65, height: 40, borderWidth: 0.5, borderColor: '#ddd', justifyContent: 'center', alignItems: 'center', flexShrink: 0 },
   headerCell: { backgroundColor: '#f8f9fa' },
