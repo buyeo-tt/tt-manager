@@ -328,15 +328,14 @@ export default function App() {
 if (Platform.OS === 'web') {
       const style = document.createElement('style');
       style.innerHTML = `
-        /* 앱 내부 스크롤 비활성화 & 브라우저 자체 세로 스크롤만 허용 */
+        /* 앱 내부 터치/입력 정상화를 위해 브라우저 스크롤 원천 차단 */
         html, body, #root { 
           width: 100%; 
-          height: auto !important;     /* 화면 높이를 내용물 크기에 맞게 자동 확장 */
-          min-height: 100vh;
+          height: 100%; 
+          min-height: 100dvh; /* 모바일 아래쪽 잘림 완벽 방지 */
           margin: 0; 
           padding: 0; 
-          overflow-y: auto !important; /* 브라우저 세로 스크롤 작동 */
-          overflow-x: hidden;          /* 브라우저 가로 흔들림 방지 */
+          overflow: hidden !important; /* 브라우저 스크롤 끄기 (필수) */
         }
         @media print {
           html, body, #root { height: auto !important; min-height: 100% !important; overflow: visible !important; }
@@ -1693,12 +1692,11 @@ function LeagueScreen({ setScreen, globalPlayers }) {
 
   const renderGridBoard = useMemo(() => {
     const statsMap = {}; standings.forEach(s => { statsMap[s.name] = s; });
-    return (
-     <View style={styles.gridContainer}>
-       <ScrollView horizontal style={{ width: '100%', flexGrow: 0, flexShrink: 1 }} contentContainerStyle={{ alignItems: 'flex-start' }} showsHorizontalScrollIndicator={true} nestedScrollEnabled={true}
-  >
-    <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start' }}
-    >
+return (
+      <View style={styles.gridContainer}>
+        {/* 👇 여기에 style={{ width: '100%' }} 를 추가하여 모바일 터치 영역을 확보합니다 */}
+        <ScrollView horizontal style={{ width: '100%' }} showsHorizontalScrollIndicator={false}>
+          <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start', minWidth: 'max-content' }}>
             <Text style={[styles.captureTitle, { marginBottom: 20 }]}>{t('leagueBoardTitle', { groupName: activeSession?.name || '' })}</Text>
             <View>
               <View style={styles.row}>
@@ -2079,9 +2077,9 @@ function LeagueScreen({ setScreen, globalPlayers }) {
 
 // 스타일 시트 - 원본 유지 (신규 하단 버튼용 스타일 2개 추가)
 const styles = StyleSheet.create({
-  safeArea: { flexGrow: 1, backgroundColor: '#fcfcfc' },
-  container: { flexGrow: 1 },
-  screenContainer: { flexGrow: 1, width: '100%', maxWidth: '100%' },
+  safeArea: { flex: 1, backgroundColor: '#fcfcfc' },
+  container: { flex: 1 },
+  screenContainer: { flex: 1, width: '100%', maxWidth: '100%', overflow: 'hidden' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 15, borderBottomWidth: 1, borderColor: '#ddd', backgroundColor: '#fff' },
   backBtn: { fontSize: 14, color: '#1A73E8', fontWeight: 'bold' },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333' },
