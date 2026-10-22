@@ -210,7 +210,8 @@ const translations = {
     saveGrid: "📊 매치보드(그리드) 저장",
     saveStandings: "🏆 상세 순위표 저장",
     saveScoreBoard: "📅 점수 기록 보드 저장",
-    savePrintableScorecards: "🖨️ 1:1 대진표 저장 (기록지)",
+    savePrintableScorecards: "🖨️ 1:1 대진표 전체 저장 (기록지)",
+    saveIndividualScorecards: "🖨️ 1:1 대진표 각각 저장 (기록지)",
     clubCreateHint: "동호회가 생성되었습니다.",
     matchOrder: "경기 순서",
     sortDefault: "기본순",
@@ -286,7 +287,7 @@ const translations = {
     manualS4B3Desc: "현재 사용 중인 기기와 브라우저(예: 내 폰의 크롬)에만 저장되므로 다른 기기와 연동되지 않습니다. 중요한 선수 명단은 [선수 관리 DB] 상단의 [내보내기] 기능을 통해 카카오톡이나 메모장에 텍스트로 미리 백업해 두는 것을 강력히 권장합니다."
   },
   en: { 
-    appName: "TT Bracket Manager", playerDbBtn: "👥 Player DB", leagueBtn: "🔄 League (Groups)", tournamentBtn: "🏆 Tournament", manualBtn: "📖 App Manual", continueTournament: "Continue Tournament", playerManagerTitle: "Player DB", manualTitle: "User Manual", backToMain: "◀ Home", export: "Export", exportSelectTitle: "Select List to Export", exportAllPlayers: "All Players", addClubBtn: "+ Club", newClubTitle: "Add New Club", clubNamePlaceholder: "Club Name", all: "All", addingToClubHint: "📌 Adding to [{club}]", nameInputPlaceholder: "Name + Class", defaultClub: "Default Club", add: "Add", pasteListBtn: "📥 Paste Text", pasteListTitle: "Paste Player List", pastePlaceholder: "[Club A] John 6\nJane 5", cancel: "Cancel", import: "Import", notice: "Notice", error: "Error", warning: "Warning", matchWarningTitle: "Warning", matchWarningDesc: "There are ongoing matches. Creating new matches will delete existing results. Continue?", apply: "Confirm", enterName: "Enter a name.", alreadyRegistered: "Player already registered.", noPlayerExport: "No players to export.", noPlayerImport: "No valid names.", importConfirm: "Add {count} players?", back: "◀ Back", tournamentSetupTitle: "[{groupName}] Setup", basicInfo: "1. Basic Info", totalPlayers: "Total Players:", prelimGroups: "Guide Groups:", autoByeInfo: "💡 Round of {size}, {byes} Byes will be assigned", seedAssignment: "2. Seed Assignment", seedSlot: "Seed {num} Slot", groupRank: "Gr {group} - Rank {rank}", genBracketBtn: "Generate Bracket", minPlayersReq: "At least 2 players needed.", maxPlayersReq: "Max 256 players allowed.", leagueMaxError: "Max 20 players per group.", bye: "Bye", waiting: "Waiting", unselected: "Unselected", exit: "◀ Home",  bracketBoard: "[{groupName}] Board", refereeNotice: "📢 Referee: [{name}] is the referee.", tournamentBracket: "🏆 {groupName} (Round of {size})", finals: "Finals", roundOf: "Round of {size}", shareResults: "📢 Share Results", saveFullImage: "📸 Save Full Image", selectWinner: "Select Winner", wait: "Wait", notFinished: "Finals not determined.", none: "None", tourneyResultText: "🏆 [{groupName} Tournament Results] 🏆\n\n🥇 1st: {winner}\n🥈 2nd: {runnerUp}\n🥉 3rd: {thirds}", needPermission: "Permission Required", permissionDesc: "Photo library access is needed.", saveSuccess: "Saved", saveImageSuccess: "Saved to gallery! 📸", saveFailed: "Failed to save.", prelimSetup: "Prelims Setup", loadFromDb: "1. Load from DB", swipeInstruction: "Swipe horizontally and tap to add.", noAvailablePlayers: "No available players.", confirmedPlayers: "2. [{groupName}] Confirmed ({count})", tapToRemove: "Tap to remove.", noSelectedPlayers: "No selected players.", genMatchesBtn: "Generate Matches", enterBoardBtn: "▶ Enter {groupName} Board", resetBoardBtn: "Reset Bracket", createMatchesBtn: "Create New", backToSetup: "◀ Setup", prelimBoard: "[{groupName}] Match Board", leagueBoardTitle: "🏆 {groupName} Match Board", player: "Player", detailedStandings: "📊 Standings", rank: "Rank", name: "Name", winLoss: "W/L", totalPoints: "Pts", winLossFormat: "{win}W {lose}L", scoreBoard: "📅 Score Board", matchNumber: "Match {num} (Ref:{ref})", share: "Share", saveImage: "Save Image", saveProgress: "Save Progress", saveProgressMsg: "Match progress has been saved.", reset: "Reset", leagueResultText: "[{groupName} Standings]\n\n{text}", leagueRankLine: "{rank}: {name} ({win}W {lose}L, Pts: {pts})", resetAlertTitle: "Reset", resetAlertDesc: "Clear all match results?", langSwitch: "한국어", rankingMethodTitle: "Ranking System", rankPoints: "Points", rankWins: "Win/Loss", selectSaveOption: "Select Save Option", saveGrid: "📊 Save Grid", saveStandings: "🏆 Save Standings", saveScoreBoard: "📅 Save Score Board", savePrintableScorecards: "🖨️ Save All Match Scorecards", clubCreateHint: "Club created.", matchOrder: "Match Order", sortDefault: "Default", sortName: "Name", sortClass: "Class", colorMode: "🎨 Color", addGroup: "+ Add Group", delGroup: "Delete Group", groupNameInputTitle: "Group Name", groupNamePlaceholder: "e.g. Group A", summaryTitle: "📊 All Groups Summary", summaryBtn: "📊 Summary", noDataGroup: "No match data.", savedGroupsInfo: "💾 Saved Templates", saveCurrentList: "+ Save Current Template", noSavedGroups: "No templates saved.", template: "Template {index}", delete: "Del", load: "Load", saveListEmpty: "No players to save.", saveListMax: "Max 10 templates allowed.", saveListSuccess: "Template saved.", loadGroupSuccess: "Template loaded to current group.", goToActiveGame: "▶ Active Game", importLeague: "🔄 Import League", manualSelect: "✍️ Manual Select", rankRange: "Rank Range:", toRank: "", importBtn: "Import Players", importSuccess: "Imported {count} players from League.", noImportData: "No players matched the criteria.", importedCount: "📌 Imported from League: {count} players", integrated: "Integrated", upperBracket: "Upper", lowerBracket: "Lower", matchScorecardTitle: "{groupName} - Match Scorecard", matchRefAndTable: "Ref: {ref} / Table: ________", finalScore: "Final Score", finalWinner: "Final Winner: _________________", gameNum: "Game {num}",
+    appName: "TT Bracket Manager", playerDbBtn: "👥 Player DB", leagueBtn: "🔄 League (Groups)", tournamentBtn: "🏆 Tournament", manualBtn: "📖 App Manual", continueTournament: "Continue Tournament", playerManagerTitle: "Player DB", manualTitle: "User Manual", backToMain: "◀ Home", export: "Export", exportSelectTitle: "Select List to Export", exportAllPlayers: "All Players", addClubBtn: "+ Club", newClubTitle: "Add New Club", clubNamePlaceholder: "Club Name", all: "All", addingToClubHint: "📌 Adding to [{club}]", nameInputPlaceholder: "Name + Class", defaultClub: "Default Club", add: "Add", pasteListBtn: "📥 Paste Text", pasteListTitle: "Paste Player List", pastePlaceholder: "[Club A] John 6\nJane 5", cancel: "Cancel", import: "Import", notice: "Notice", error: "Error", warning: "Warning", matchWarningTitle: "Warning", matchWarningDesc: "There are ongoing matches. Creating new matches will delete existing results. Continue?", apply: "Confirm", enterName: "Enter a name.", alreadyRegistered: "Player already registered.", noPlayerExport: "No players to export.", noPlayerImport: "No valid names.", importConfirm: "Add {count} players?", back: "◀ Back", tournamentSetupTitle: "[{groupName}] Setup", basicInfo: "1. Basic Info", totalPlayers: "Total Players:", prelimGroups: "Guide Groups:", autoByeInfo: "💡 Round of {size}, {byes} Byes will be assigned", seedAssignment: "2. Seed Assignment", seedSlot: "Seed {num} Slot", groupRank: "Gr {group} - Rank {rank}", genBracketBtn: "Generate Bracket", minPlayersReq: "At least 2 players needed.", maxPlayersReq: "Max 256 players allowed.", leagueMaxError: "Max 20 players per group.", bye: "Bye", waiting: "Waiting", unselected: "Unselected", exit: "◀ Home",  bracketBoard: "[{groupName}] Board", refereeNotice: "📢 Referee: [{name}] is the referee.", tournamentBracket: "🏆 {groupName} (Round of {size})", finals: "Finals", roundOf: "Round of {size}", shareResults: "📢 Share Results", saveFullImage: "📸 Save Full Image", selectWinner: "Select Winner", wait: "Wait", notFinished: "Finals not determined.", none: "None", tourneyResultText: "🏆 [{groupName} Tournament Results] 🏆\n\n🥇 1st: {winner}\n🥈 2nd: {runnerUp}\n🥉 3rd: {thirds}", needPermission: "Permission Required", permissionDesc: "Photo library access is needed.", saveSuccess: "Saved", saveImageSuccess: "Saved to gallery! 📸", saveFailed: "Failed to save.", prelimSetup: "Prelims Setup", loadFromDb: "1. Load from DB", swipeInstruction: "Swipe horizontally and tap to add.", noAvailablePlayers: "No available players.", confirmedPlayers: "2. [{groupName}] Confirmed ({count})", tapToRemove: "Tap to remove.", noSelectedPlayers: "No selected players.", genMatchesBtn: "Generate Matches", enterBoardBtn: "▶ Enter {groupName} Board", resetBoardBtn: "Reset Bracket", createMatchesBtn: "Create New", backToSetup: "◀ Setup", prelimBoard: "[{groupName}] Match Board", leagueBoardTitle: "🏆 {groupName} Match Board", player: "Player", detailedStandings: "📊 Standings", rank: "Rank", name: "Name", winLoss: "W/L", totalPoints: "Pts", winLossFormat: "{win}W {lose}L", scoreBoard: "📅 Score Board", matchNumber: "Match {num} (Ref:{ref})", share: "Share", saveImage: "Save Image", saveProgress: "Save Progress", saveProgressMsg: "Match progress has been saved.", reset: "Reset", leagueResultText: "[{groupName} Standings]\n\n{text}", leagueRankLine: "{rank}: {name} ({win}W {lose}L, Pts: {pts})", resetAlertTitle: "Reset", resetAlertDesc: "Clear all match results?", langSwitch: "한국어", rankingMethodTitle: "Ranking System", rankPoints: "Points", rankWins: "Win/Loss", selectSaveOption: "Select Save Option", saveGrid: "📊 Save Grid", saveStandings: "🏆 Save Standings", saveScoreBoard: "📅 Save Score Board", savePrintableScorecards: "🖨️ Save All Match Scorecards", saveIndividualScorecards: "🖨️ Save Individual Scorecards", clubCreateHint: "Club created.", matchOrder: "Match Order", sortDefault: "Default", sortName: "Name", sortClass: "Class", colorMode: "🎨 Color", addGroup: "+ Add Group", delGroup: "Delete Group", groupNameInputTitle: "Group Name", groupNamePlaceholder: "e.g. Group A", summaryTitle: "📊 All Groups Summary", summaryBtn: "📊 Summary", noDataGroup: "No match data.", savedGroupsInfo: "💾 Saved Templates", saveCurrentList: "+ Save Current Template", noSavedGroups: "No templates saved.", template: "Template {index}", delete: "Del", load: "Load", saveListEmpty: "No players to save.", saveListMax: "Max 10 templates allowed.", saveListSuccess: "Template saved.", loadGroupSuccess: "Template loaded to current group.", goToActiveGame: "▶ Active Game", importLeague: "🔄 Import League", manualSelect: "✍️ Manual Select", rankRange: "Rank Range:", toRank: "", importBtn: "Import Players", importSuccess: "Imported {count} players from League.", noImportData: "No players matched the criteria.", importedCount: "📌 Imported from League: {count} players", integrated: "Integrated", upperBracket: "Upper", lowerBracket: "Lower", matchScorecardTitle: "{groupName} - Match Scorecard", matchRefAndTable: "Ref: {ref} / Table: ________", finalScore: "Final Score", finalWinner: "Final Winner: _________________", gameNum: "Game {num}",
     manualSec1Title: "👥 Player Database", manualS1B1Title: "Club & Sorting:", manualS1B1Desc: "Filter easily by club. Add class number for auto-sorting.", manualS1B4Title: "Bulk Add:", manualS1B4Desc: "Paste text lists to add multiple players.", manualSec2Title: "🔄 League (Groups)", manualS2B0Title: "Multi-Group Tabs:", manualS2B0Desc: "Manage multiple groups simultaneously via top tabs.", manualS2B1Title: "Ranking Logic:", manualS2B1Desc: "Choose Points or Wins priority. Auto calculates Head-to-Head.", manualS2B2Title: "Fair Ref & Rest:", manualS2B2Desc: "Maximizes rest time and distributes referee duties fairly. (Consecutive matches may occur depending on the player count).", manualS2B3Title: "Safe Image Export (Common):", manualS2B3Desc: "Tap the Save Image button at the bottom to open a pop-up modal. You can safely save brackets, standings, and scorecards to your gallery on both Android and iOS.", manualSec3Title: "🏆 Tournament", manualS3B1Title: "Auto BYEs & Snake Seed:", manualS3B1Desc: "Creates 8~256 bracket and separates strong players.", manualS3B2Title: "League Integration:", manualS3B2Desc: "Automatically import players based on their league rankings to easily create Upper/Lower brackets.", manualS3B3Title: "Scorecards & Bracket Export:", manualS3B3Desc: "Tap a match to export a 1:1 referee scorecard, or use the bottom button to save the entire bracket progress as an image.", manualS3B4Title: "Winner Selection System:", manualS3B4Desc: "Tap winner to advance. You can change the winner anytime by tapping the match card again.", manualSec4Title: "💾 Data Save & Backup Guide", manualS4B1Title: "Auto Save (Local Storage):", manualS4B1Desc: "Even if you close the app or browser, your player list and progress are safely saved in your current browser and will be restored on your next visit.", manualS4B2Title: "⚠️ Data Deletion Warnings:", manualS4B2Desc: "All data will be permanently deleted if you: 1) Clear browser cache/data, 2) Run phone optimizer apps, or 3) Use Incognito/Private browsing mode.", manualS4B3Title: "No Cross-Device Sync & Backup Tip:", manualS4B3Desc: "Data is strictly tied to your current device and browser. We strongly recommend backing up your player list via the [Export] button in the Player DB."
   }
 };
@@ -1408,6 +1409,52 @@ function LeagueScreen({ setScreen, globalPlayers }) {
   const standingsCaptureRef = useRef();
   const printableScorecardsRef = useRef();
   const summaryCaptureRef = useRef();
+  const individualScorecardRefs = useRef({});
+  const captureAndSaveIndividualImages = async () => {
+    try {
+      Keyboard.dismiss();
+      setIsLeagueSaveModal(false);
+
+      // 모바일 기기 권한 체크
+      if (Platform.OS !== 'web') {
+        const { status } = await MediaLibrary.requestPermissionsAsync(true);
+        if (status !== 'granted') { Alert.alert(t('needPermission'), t('permissionDesc')); return; }
+      }
+
+      let successCount = 0;
+      // 화면에 표시된 매치들을 순회하며 하나씩 캡처
+      for (let i = 0; i < displayedMatches.length; i++) {
+        const m = displayedMatches[i];
+        const targetRef = individualScorecardRefs.current[m.id];
+        if (!targetRef) continue;
+
+        const localUri = await captureRef(targetRef, { format: 'png', quality: 0.8 });
+
+        if (Platform.OS === 'web') {
+          const link = document.createElement('a');
+          link.href = localUri;
+          link.download = `기록지_${activeSession?.name}_${i+1}경기_${m.p1}_vs_${m.p2}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          // 브라우저의 다중 다운로드 차단 방지를 위한 약간의 대기시간
+          await new Promise(res => setTimeout(res, 300));
+        } else {
+          await MediaLibrary.saveToLibraryAsync(localUri);
+        }
+        successCount++;
+      }
+
+      if (Platform.OS !== 'web') {
+        Alert.alert(t('saveSuccess'), `${successCount}개의 기록지가 앨범에 각각 저장되었습니다. 📸`);
+      } else {
+        Alert.alert("알림", `${successCount}개의 기록지 다운로드가 시작되었습니다.\n(※ 브라우저 설정에 따라 '다중 다운로드 허용' 팝업이 뜰 수 있습니다)`);
+      }
+    } catch (error) {
+      Alert.alert(t('error'), t('saveFailed'));
+    }
+  };
+
 
   useEffect(() => { setClubFilter(null); }, []);
 
@@ -1873,6 +1920,9 @@ return (
               <TouchableOpacity style={styles.exportListItem} onPress={() => { captureAndSaveImage(printableScorecardsRef); setIsLeagueSaveModal(false); }}>
                 <Text style={styles.exportListText}>🖨️ {t('savePrintableScorecards')}</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.exportListItem} onPress={captureAndSaveIndividualImages}>
+                <Text style={styles.exportListText}>🖨️ {t('saveIndividualScorecards')}</Text>
+              </TouchableOpacity>
               
               <Text style={{fontSize: 12, color: '#EA4335', marginTop: 15, textAlign: 'center'}}>
                 ※ 모바일 웹 브라우저 캡처 시 화면이 잘릴 수 있습니다. 가급적 [결과 인쇄하기(PDF)]를 권장합니다.
@@ -1889,9 +1939,17 @@ return (
           <View ref={printableScorecardsRef} collapsable={false} style={{ width: 800, backgroundColor: '#fff', padding: 20 }}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 30 }}>{t('matchScorecardTitle', { groupName: activeSession?.name })}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-              {displayedMatches.map((m, i) => (
-                <View key={`print-${m.id}`} style={{ width: '48%', borderWidth: 2, borderColor: '#000', marginBottom: 20, padding: 15, borderRadius: 10 }}>
+             {displayedMatches.map((m, i) => (
+                <View 
+                  key={`print-${m.id}`} 
+                  ref={el => individualScorecardRefs.current[m.id] = el}  /* 👈 개별 캡처용 ref 바인딩 */
+                  collapsable={false}                                     /* 👈 캡처 오류 방지 필수 */
+                  style={{ width: '48%', borderWidth: 2, borderColor: '#000', marginBottom: 20, padding: 15, borderRadius: 10, backgroundColor: '#fff' }} /* 배경색 강제 적용 */
+                >
+                  {/* 개별 이미지 출력 시 소속 조 이름이 보이도록 타이틀 추가 */}
+                  <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center', marginBottom: 15, color: '#1A73E8' }}>[ {activeSession?.name} ]</Text>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderColor: '#ccc', paddingBottom: 10, marginBottom: 15 }}>
+
                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Match {i+1}</Text>
                     <Text style={{ fontSize: 16 }}>{t('matchRefAndTable', { ref: m.referee || '         ' })}</Text>
                   </View>
