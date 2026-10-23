@@ -275,7 +275,7 @@ const translations = {
     manualS3B2Title: "리그전 결과 연동 (상·하위부 편성):",
     manualS3B2Desc: "예선(리그전)의 순위 결과를 바탕으로 본선 진출자를 자동 연동할 수 있습니다. 순위별로 상위부와 하위부를 나누어 편성할 때 유용합니다.",
     manualS3B3Title: "1:1 매치 기록지 및 전체 대진표 저장:",
-    manualS3B3Desc: "진행 중인 매치 카드를 눌러 '기록지 출력'을 선택하면 개별 경기 기록지를 저장할 수 있으며, 하단의 '전체 구조도 저장'을 통해 진행 현황을 사진으로 남길 수 있습니다.",
+    manualS3B3Desc: "진행 중인 매치 카드를 눌러 '대진표 저장(출력)'을 선택하면 개별 경기 기록지를 저장할 수 있으며, 하단의 '전체 구조도 저장'을 통해 진행 현황을 사진으로 남길 수 있습니다.",
     manualS3B4Title: "승자 번복 시스템:",
     manualS3B4Desc: "매치 카드를 터치해 '승자'를 고르면 해당 선수가 다음 라운드로 진출합니다. 잘못 선택했을 경우 언제든 다시 카드를 눌러 승자를 번복할 수 있습니다.",
     manualSec4Title: "💾 데이터 저장 및 백업 안내",
@@ -1127,7 +1127,7 @@ function TournamentScreen({ setScreen, globalPlayers }) {
               </View>
               <View style={{flexDirection: 'row', marginTop: 30, justifyContent: 'center', alignItems: 'center', gap: 30}}>
                 <TouchableOpacity onPress={() => setModalVisible(false)}><Text style={{color: '#888', fontSize: 16}}>{t('cancel')}</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => captureAndSaveImage(singleScorecardRef, false)}><Text style={{color: '#1A73E8', fontSize: 16, fontWeight: 'bold'}}>기록지 출력</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => captureAndSaveImage(singleScorecardRef, false)}><Text style={{color: '#1A73E8', fontSize: 16, fontWeight: 'bold'}}>대진표 저장(출력)</Text></TouchableOpacity>
               </View>
             </View>
           </View>
@@ -1792,14 +1792,23 @@ function LeagueScreen({ setScreen, globalPlayers }) {
     try { await AsyncStorage.setItem(KEYS.L_TEMPLATES, JSON.stringify(updated)); } catch(e){}
   };
 
-  const renderGridBoard = useMemo(() => {
+const renderGridBoard = useMemo(() => {
     const statsMap = {}; standings.forEach(s => { statsMap[s.name] = s; });
-return (
+
+    // 💡 표(그리드)의 정확한 픽셀 너비 동적 계산 
+    // 좌측 선수이름 셀(65) + (선수 인원수 * 65) + 우측 총득점 셀(50)
+    const gridWidth = 65 + (leaguePlayers.length * 65) + 50;
+
+    return (
       <View style={styles.gridContainer}>
-        {/* 👇 여기에 style={{ width: '100%' }} 를 추가하여 모바일 터치 영역을 확보합니다 */}
         <ScrollView horizontal style={{ width: '100%' }} showsHorizontalScrollIndicator={false}>
          <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start' }}>
-            <Text style={[styles.captureTitle, { marginBottom: 20 }]}>{t('leagueBoardTitle', { groupName: activeSession?.name || '' })}</Text>
+            
+            {/* 💡 1. 타이틀 좌측 정렬 및 표 너비(gridWidth)로 영역 제한 */}
+            <Text style={[styles.captureTitle, { marginBottom: 20, textAlign: 'left', width: gridWidth, paddingLeft: 5 }]}>
+              {t('leagueBoardTitle', { groupName: activeSession?.name || '' })}
+            </Text>
+
             <View>
               <View style={styles.row}>
                 <View style={[styles.cell, styles.headerCell]}><Text style={styles.headerText}>{t('player')}</Text></View>
@@ -1825,12 +1834,19 @@ return (
                 );
               })}
             </View>
-            <Text style={{marginTop: 15, fontSize: 11, color: '#666'}}><Text style={{fontWeight:'bold'}}>{t('matchOrder')}:</Text> {matchSequenceText}</Text>
+            
+            {/* 💡 2. 경기 순서 텍스트를 표 너비(gridWidth)만큼의 View로 감싸서 자동 줄바꿈 적용 */}
+            <View style={{ width: gridWidth, marginTop: 15, paddingHorizontal: 5 }}>
+              <Text style={{ fontSize: 11, color: '#666', lineHeight: 18 }}>
+                <Text style={{fontWeight:'bold'}}>{t('matchOrder')}:</Text> {matchSequenceText}
+              </Text>
+            </View>
+
           </View>
         </ScrollView>
       </View>
     );
-  }, [leaguePlayers, matchMap, standings, t, isColorMode, matchSequenceText, activeSession?.name]); 
+  }, [leaguePlayers, matchMap, standings, t, isColorMode, matchSequenceText, activeSession?.name]);
 
   if (isMatchActive && matches.length > 0) {
     return (
