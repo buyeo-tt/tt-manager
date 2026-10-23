@@ -1357,11 +1357,10 @@ const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }
     updateScore(matchInfo.id, val1, val2);
   };
 
-  // 💡 새롭게 추가된 점수 증감(+/-) 함수
   const adjustScore = (player, delta) => {
     if (player === 1) {
       const current = parseInt(localS1 || '0', 10);
-      const next = Math.max(0, current + delta).toString(); // 점수가 0 밑으로 내려가지 않도록 방어
+      const next = Math.max(0, current + delta).toString();
       setLocalS1(next);
       updateScore(matchInfo.id, next, localS2);
     } else {
@@ -1375,48 +1374,49 @@ const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }
   return (
     <View style={styles.leagueMatchCard}>
       <Text style={styles.matchInfo}>{t('matchNumber', { num: idx + 1, ref: matchInfo.referee })}</Text>
-      <View style={styles.scoreRow}>
-        <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p1, isColorMode)}]} numberOfLines={1} adjustsFontSizeToFit>
-          {matchInfo.p1}
-        </Text>
+      
+      {/* 💡 화면을 좌, 중앙, 우 3구역으로 엄격히 분할 */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         
-        {/* 왼쪽 점수 컨트롤러 */}
-        <View style={styles.scoreControl}>
-          <TouchableOpacity style={styles.scoreBtn} onPress={() => adjustScore(1, -1)}>
-            <Text style={styles.scoreBtnText}>-</Text>
-          </TouchableOpacity>
-          <TextInput 
-            style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
-            value={localS1} 
-            onChangeText={(v) => { setLocalS1(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, v.replace(/[^0-9]/g, ''), localS2); }} 
-            onBlur={handleBlur1} 
-          />
-          <TouchableOpacity style={[styles.scoreBtn, {backgroundColor: '#eef2f6', borderColor: '#1A73E8'}]} onPress={() => adjustScore(1, 1)}>
-            <Text style={[styles.scoreBtnText, {color: '#1A73E8'}]}>+</Text>
-          </TouchableOpacity>
+        {/* 왼쪽: 선수 1 */}
+        <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 8 }}>
+          <Text style={[styles.leagueMatchPlayer, { color: getColorForPlayer(matchInfo.p1, isColorMode), textAlign: 'right' }]} numberOfLines={2}>
+            {matchInfo.p1}
+          </Text>
         </View>
 
-        <Text style={{marginHorizontal: 5, color: '#888', fontWeight: 'bold'}}> : </Text>
+        {/* 중앙: 점수 컨트롤러 (크기 고정 방어) */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}>
+          <View style={styles.scoreControl}>
+            <TouchableOpacity style={styles.scoreBtn} onPress={() => adjustScore(1, -1)}><Text style={styles.scoreBtnText}>-</Text></TouchableOpacity>
+            <TextInput 
+              style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
+              value={localS1} onChangeText={(v) => { setLocalS1(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, v.replace(/[^0-9]/g, ''), localS2); }} 
+              onBlur={handleBlur1} 
+            />
+            <TouchableOpacity style={[styles.scoreBtn, {backgroundColor: '#eef2f6', borderColor: '#1A73E8'}]} onPress={() => adjustScore(1, 1)}><Text style={[styles.scoreBtnText, {color: '#1A73E8'}]}>+</Text></TouchableOpacity>
+          </View>
 
-        {/* 오른쪽 점수 컨트롤러 */}
-        <View style={styles.scoreControl}>
-          <TouchableOpacity style={styles.scoreBtn} onPress={() => adjustScore(2, -1)}>
-            <Text style={styles.scoreBtnText}>-</Text>
-          </TouchableOpacity>
-          <TextInput 
-            style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
-            value={localS2} 
-            onChangeText={(v) => { setLocalS2(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, localS1, v.replace(/[^0-9]/g, '')); }} 
-            onBlur={handleBlur2} 
-          />
-          <TouchableOpacity style={[styles.scoreBtn, {backgroundColor: '#eef2f6', borderColor: '#1A73E8'}]} onPress={() => adjustScore(2, 1)}>
-            <Text style={[styles.scoreBtnText, {color: '#1A73E8'}]}>+</Text>
-          </TouchableOpacity>
+          <Text style={{ marginHorizontal: 6, color: '#888', fontWeight: 'bold' }}>:</Text>
+
+          <View style={styles.scoreControl}>
+            <TouchableOpacity style={styles.scoreBtn} onPress={() => adjustScore(2, -1)}><Text style={styles.scoreBtnText}>-</Text></TouchableOpacity>
+            <TextInput 
+              style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
+              value={localS2} onChangeText={(v) => { setLocalS2(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, localS1, v.replace(/[^0-9]/g, '')); }} 
+              onBlur={handleBlur2} 
+            />
+            <TouchableOpacity style={[styles.scoreBtn, {backgroundColor: '#eef2f6', borderColor: '#1A73E8'}]} onPress={() => adjustScore(2, 1)}><Text style={[styles.scoreBtnText, {color: '#1A73E8'}]}>+</Text></TouchableOpacity>
+          </View>
         </View>
 
-        <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p2, isColorMode)}]} numberOfLines={1} adjustsFontSizeToFit>
-          {matchInfo.p2}
-        </Text>
+        {/* 오른쪽: 선수 2 */}
+        <View style={{ flex: 1, alignItems: 'flex-start', paddingLeft: 8 }}>
+          <Text style={[styles.leagueMatchPlayer, { color: getColorForPlayer(matchInfo.p2, isColorMode), textAlign: 'left' }]} numberOfLines={2}>
+            {matchInfo.p2}
+          </Text>
+        </View>
+
       </View>
     </View>
   );
@@ -2266,12 +2266,10 @@ const styles = StyleSheet.create({
   scoreRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   leagueMatchPlayer: { flex: 1, textAlign: 'center', fontWeight: '600', fontSize: 15 },
   scoreControl: { flexDirection: 'row', alignItems: 'center' },
-  scoreBtn: {
-    width: 28, height: 28, backgroundColor: '#f0f0f0', borderRadius: 14, 
-    justifyContent: 'center', alignItems: 'center', marginHorizontal: 3,
-    borderWidth: 1, borderColor: '#ddd'
-  },
+  scoreBtn: { width: 28, height: 28, backgroundColor: '#f0f0f0', borderRadius: 14, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#ddd' },
   scoreBtnText: { fontSize: 16, fontWeight: 'bold', color: '#555' },
+  scoreInput: { width: 34, textAlign: 'center', fontSize: 18, color: '#333', fontWeight: 'bold', padding: 0, marginHorizontal: 3, borderBottomWidth: 1, borderColor: '#1A73E8' },
+
   actionRow: { flexDirection: 'row', justifyContent: 'center', padding: 15, paddingBottom: Platform.OS === 'android' ? 60 : 45, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#eee' },
   leagueActionRow: { flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 15, marginBottom: 15 },
   actionBtnShare: { flex: 1, backgroundColor: '#FBBC04', paddingVertical: 15, borderRadius: 8, marginRight: 5, alignItems: 'center', elevation: 2 },
