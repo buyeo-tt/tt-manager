@@ -1356,26 +1356,67 @@ const LeagueMatchCard = React.memo(({ matchInfo, idx, updateScore, isColorMode }
     if (val2 === '' && val1 !== '') { val2 = '0'; setLocalS2('0'); }
     updateScore(matchInfo.id, val1, val2);
   };
+
+  // 💡 새롭게 추가된 점수 증감(+/-) 함수
+  const adjustScore = (player, delta) => {
+    if (player === 1) {
+      const current = parseInt(localS1 || '0', 10);
+      const next = Math.max(0, current + delta).toString(); // 점수가 0 밑으로 내려가지 않도록 방어
+      setLocalS1(next);
+      updateScore(matchInfo.id, next, localS2);
+    } else {
+      const current = parseInt(localS2 || '0', 10);
+      const next = Math.max(0, current + delta).toString();
+      setLocalS2(next);
+      updateScore(matchInfo.id, localS1, next);
+    }
+  };
   
   return (
     <View style={styles.leagueMatchCard}>
       <Text style={styles.matchInfo}>{t('matchNumber', { num: idx + 1, ref: matchInfo.referee })}</Text>
       <View style={styles.scoreRow}>
-        <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p1, isColorMode)}]}>{matchInfo.p1}</Text>
-        <TextInput 
-          style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
-          value={localS1} 
-          onChangeText={(v) => { setLocalS1(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, v.replace(/[^0-9]/g, ''), localS2); }} 
-          onBlur={handleBlur1} 
-        />
-        <Text> : </Text>
-        <TextInput 
-          style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
-          value={localS2} 
-          onChangeText={(v) => { setLocalS2(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, localS1, v.replace(/[^0-9]/g, '')); }} 
-          onBlur={handleBlur2} 
-        />
-        <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p2, isColorMode)}]}>{matchInfo.p2}</Text>
+        <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p1, isColorMode)}]} numberOfLines={1} adjustsFontSizeToFit>
+          {matchInfo.p1}
+        </Text>
+        
+        {/* 왼쪽 점수 컨트롤러 */}
+        <View style={styles.scoreControl}>
+          <TouchableOpacity style={styles.scoreBtn} onPress={() => adjustScore(1, -1)}>
+            <Text style={styles.scoreBtnText}>-</Text>
+          </TouchableOpacity>
+          <TextInput 
+            style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
+            value={localS1} 
+            onChangeText={(v) => { setLocalS1(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, v.replace(/[^0-9]/g, ''), localS2); }} 
+            onBlur={handleBlur1} 
+          />
+          <TouchableOpacity style={[styles.scoreBtn, {backgroundColor: '#eef2f6', borderColor: '#1A73E8'}]} onPress={() => adjustScore(1, 1)}>
+            <Text style={[styles.scoreBtnText, {color: '#1A73E8'}]}>+</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={{marginHorizontal: 5, color: '#888', fontWeight: 'bold'}}> : </Text>
+
+        {/* 오른쪽 점수 컨트롤러 */}
+        <View style={styles.scoreControl}>
+          <TouchableOpacity style={styles.scoreBtn} onPress={() => adjustScore(2, -1)}>
+            <Text style={styles.scoreBtnText}>-</Text>
+          </TouchableOpacity>
+          <TextInput 
+            style={styles.scoreInput} keyboardType="numeric" maxLength={3} placeholder="0" placeholderTextColor="#ccc" 
+            value={localS2} 
+            onChangeText={(v) => { setLocalS2(v.replace(/[^0-9]/g, '')); updateScore(matchInfo.id, localS1, v.replace(/[^0-9]/g, '')); }} 
+            onBlur={handleBlur2} 
+          />
+          <TouchableOpacity style={[styles.scoreBtn, {backgroundColor: '#eef2f6', borderColor: '#1A73E8'}]} onPress={() => adjustScore(2, 1)}>
+            <Text style={[styles.scoreBtnText, {color: '#1A73E8'}]}>+</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={[styles.leagueMatchPlayer, {color: getColorForPlayer(matchInfo.p2, isColorMode)}]} numberOfLines={1} adjustsFontSizeToFit>
+          {matchInfo.p2}
+        </Text>
       </View>
     </View>
   );
@@ -2224,7 +2265,13 @@ const styles = StyleSheet.create({
   matchInfo: { fontSize: 12, color: '#1A73E8', marginBottom: 10 },
   scoreRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   leagueMatchPlayer: { flex: 1, textAlign: 'center', fontWeight: '600', fontSize: 15 },
-  scoreInput: { borderBottomWidth: 2, borderColor: '#1A73E8', width: 40, textAlign: 'center', fontSize: 20, color: '#333', minHeight: 45 },
+  scoreControl: { flexDirection: 'row', alignItems: 'center' },
+  scoreBtn: {
+    width: 28, height: 28, backgroundColor: '#f0f0f0', borderRadius: 14, 
+    justifyContent: 'center', alignItems: 'center', marginHorizontal: 3,
+    borderWidth: 1, borderColor: '#ddd'
+  },
+  scoreBtnText: { fontSize: 16, fontWeight: 'bold', color: '#555' },
   actionRow: { flexDirection: 'row', justifyContent: 'center', padding: 15, paddingBottom: Platform.OS === 'android' ? 60 : 45, backgroundColor: '#fff', borderTopWidth: 1, borderColor: '#eee' },
   leagueActionRow: { flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 15, marginBottom: 15 },
   actionBtnShare: { flex: 1, backgroundColor: '#FBBC04', paddingVertical: 15, borderRadius: 8, marginRight: 5, alignItems: 'center', elevation: 2 },
