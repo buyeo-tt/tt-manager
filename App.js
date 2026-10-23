@@ -1795,31 +1795,49 @@ function LeagueScreen({ setScreen, globalPlayers }) {
 const renderGridBoard = useMemo(() => {
     const statsMap = {}; standings.forEach(s => { statsMap[s.name] = s; });
 
-    // 💡 표(그리드)의 정확한 픽셀 너비 동적 계산 
-    // 좌측 선수이름 셀(65) + (선수 인원수 * 65) + 우측 총득점 셀(50)
-    const gridWidth = 65 + (leaguePlayers.length * 65) + 50;
+    // 💡 표(그리드)의 정확한 픽셀 너비 동적 계산 (업데이트)
+    // 좌측 이름셀(90) + (선수 인원수 * 65) + 우측 총점(50) + 비고(70)
+    const gridWidth = 90 + (leaguePlayers.length * 65) + 50 + 70;
 
     return (
       <View style={styles.gridContainer}>
         <ScrollView horizontal style={{ width: '100%' }} showsHorizontalScrollIndicator={false}>
          <View ref={gridCaptureRef} collapsable={false} style={{ backgroundColor: '#fcfcfc', paddingHorizontal: 5, paddingVertical: 15, alignSelf: 'flex-start' }}>
             
-            {/* 💡 1. 타이틀 좌측 정렬 및 표 너비(gridWidth)로 영역 제한 */}
             <Text style={[styles.captureTitle, { marginBottom: 20, textAlign: 'left', width: gridWidth, paddingLeft: 5 }]}>
               {t('leagueBoardTitle', { groupName: activeSession?.name || '' })}
             </Text>
 
             <View>
+              {/* 💡 헤더(머리글) 행 */}
               <View style={styles.row}>
-                <View style={[styles.cell, styles.headerCell]}><Text style={styles.headerText}>{t('player')}</Text></View>
-                {leaguePlayers.map((p, i) => (<View key={`h-${p}`} style={[styles.cell, styles.headerCell]}><Text style={[styles.headerText, {color: getColorForPlayer(p, isColorMode)}]}>{i+1}. {p}</Text></View>))}
-                <View style={[styles.cell, styles.headerCell, { width: 50, backgroundColor: '#eef2f6' }]}><Text style={[styles.headerText, { color: '#1A73E8' }]}>{t('totalPoints')}</Text></View>
+                {/* 이름 열 너비를 90으로 확장 */}
+                <View style={[styles.cell, styles.headerCell, { width: 90 }]}>
+                  <Text style={styles.headerText}>{t('player')}</Text>
+                </View>
+                {leaguePlayers.map((p, i) => (
+                  <View key={`h-${p}`} style={[styles.cell, styles.headerCell]}>
+                    <Text style={[styles.headerText, {color: getColorForPlayer(p, isColorMode)}]}>{i+1}. {p}</Text>
+                  </View>
+                ))}
+                <View style={[styles.cell, styles.headerCell, { width: 50, backgroundColor: '#eef2f6' }]}>
+                  <Text style={[styles.headerText, { color: '#1A73E8' }]}>{t('totalPoints')}</Text>
+                </View>
+                {/* 비고 열 추가 */}
+                <View style={[styles.cell, styles.headerCell, { width: 70, backgroundColor: '#eef2f6' }]}>
+                  <Text style={[styles.headerText, { color: '#555' }]}>비고</Text>
+                </View>
               </View>
+              
+              {/* 💡 데이터(점수) 행 */}
               {leaguePlayers.map((rowPlayer, r) => {
                 const playerStats = statsMap[rowPlayer]; const totalScore = playerStats ? playerStats.scoreSum : 0;
                 return (
                   <View key={`r-${r}`} style={styles.row}>
-                    <View style={[styles.cell, styles.labelCell]}><Text style={[styles.labelText, {color: getColorForPlayer(rowPlayer, isColorMode)}]}>{r+1}. {rowPlayer}</Text></View>
+                    {/* 이름 열 너비를 90으로 확장 */}
+                    <View style={[styles.cell, styles.labelCell, { width: 90 }]}>
+                      <Text style={[styles.labelText, {color: getColorForPlayer(rowPlayer, isColorMode)}]}>{r+1}. {rowPlayer}</Text>
+                    </View>
                     {leaguePlayers.map((colPlayer, c) => {
                       const match = matchMap[getMatchKey(rowPlayer, colPlayer)]; const isSelf = rowPlayer === colPlayer;
                       let displayScore = ''; if (!isSelf && match?.completed) { displayScore = match.p1 === rowPlayer ? (match.s1 || '0') : (match.s2 || '0'); }
@@ -1829,13 +1847,16 @@ const renderGridBoard = useMemo(() => {
                         </View>
                       );
                     })}
-                    <View style={[styles.cell, { width: 50, backgroundColor: '#f8f9fa' }]}><Text style={[styles.gridScore, { color: '#333' }]}>{totalScore}</Text></View>
+                    <View style={[styles.cell, { width: 50, backgroundColor: '#f8f9fa' }]}>
+                      <Text style={[styles.gridScore, { color: '#333' }]}>{totalScore}</Text>
+                    </View>
+                    {/* 비고 열 빈칸 추가 */}
+                    <View style={[styles.cell, { width: 70, backgroundColor: '#fff' }]} />
                   </View>
                 );
               })}
             </View>
             
-            {/* 💡 2. 경기 순서 텍스트를 표 너비(gridWidth)만큼의 View로 감싸서 자동 줄바꿈 적용 */}
             <View style={{ width: gridWidth, marginTop: 15, paddingHorizontal: 5 }}>
               <Text style={{ fontSize: 11, color: '#666', lineHeight: 18 }}>
                 <Text style={{fontWeight:'bold'}}>{t('matchOrder')}:</Text> {matchSequenceText}
